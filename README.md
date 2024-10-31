@@ -41,12 +41,12 @@ This project is a full-stack application with a React frontend and an Express ba
 
 To build the frontend and move the build output to the backend directory, run the following command from the `backend` directory:
 
-    ```sh
-    npm run build-frontend
-    ```
+```
+npm run build-frontend
+```
 
 Start the backend & frontend server:
 
-    ```sh
-    npm run dev
-    ```
+```
+npm run dev
+```
