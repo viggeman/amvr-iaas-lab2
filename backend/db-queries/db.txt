@@ -59,7 +59,7 @@ BEFORE UPDATE ON addresses
 FOR EACH ROW
 EXECUTE FUNCTION update_modified_at();
 
-CREATE TRIGGER app_user_modifiet_at_trigger
+CREATE TRIGGER app_user_modified_at_trigger
 BEFORE UPDATE ON app_user
 FOR EACH ROW
 EXECUTE FUNCTION update_modified_at();
@@ -69,7 +69,7 @@ BEFORE UPDATE ON post
 FOR EACH ROW
 EXECUTE FUNCTION update_modified_at();
 
-CREATE TRIGGER comment_modifiet_at_trigger
+CREATE TRIGGER comment_modified_at_trigger
 BEFORE UPDATE ON comment
 FOR EACH ROW
 EXECUTE FUNCTION update_modified_at();
