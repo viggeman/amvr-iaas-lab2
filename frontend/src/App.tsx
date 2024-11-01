@@ -1,25 +1,15 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { routes } from './routes/routes';
 
 function App() {
-  const [message, setMessage] = useState<string>('');
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api');
-        const data = await response.text();
-        setMessage(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
   return (
-    <>
-      <div>{message}</div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        {routes.map((route) => (
+          <Route key={route.path} path={route.path} element={route.element} />
+        ))}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
