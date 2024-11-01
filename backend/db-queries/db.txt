@@ -54,7 +54,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 // Add triggers to all tables
-CREATE TRIGGER addresses_modifiet_at_trigger
+CREATE TRIGGER addresses_modified_at_trigger
 BEFORE UPDATE ON addresses
 FOR EACH ROW
 EXECUTE FUNCTION update_modified_at();
@@ -64,7 +64,7 @@ BEFORE UPDATE ON app_user
 FOR EACH ROW
 EXECUTE FUNCTION update_modified_at();
 
-CREATE TRIGGER post_modifiet_at_trigger
+CREATE TRIGGER post_modified_at_trigger
 BEFORE UPDATE ON post
 FOR EACH ROW
 EXECUTE FUNCTION update_modified_at();
