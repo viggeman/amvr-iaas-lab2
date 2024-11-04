@@ -1,18 +1,18 @@
 const express = require('express');
 const path = require('path');
-// const dotenv = require('dotenv');
-// const { Client } = require('pg');
+const dotenv = require('dotenv');
+const { Client } = require('pg');
 
-// dotenv.config();
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// const client = new Client({
-//   connectionString: process.env.PGURI,
-// });
+const client = new Client({
+  connectionString: process.env.PGURI,
+});
 
-// client.connect();
+client.connect();
 
 app.use(express.json());
 
@@ -23,6 +23,35 @@ app.get('/api', async (_request, response) => {
   } catch (error) {
     console.error(error);
     response.status(500).send('Error ');
+  }
+});
+
+//GET all users
+app.get('/api/users', async (_request, response) => {
+  try {
+    const users = await client.query('SELECT * FROM app_user');
+    response.status(200).json(users.rows);
+  } catch (error) {
+    console.error(error);
+    response.status(500).send('Error ');
+  }
+});
+
+//GET one user
+app.get('/api/users/:id', async (request, response) => {
+  try {
+    const { id } = request.params;
+    const user = await client.query('SELECT * FROM app_user WHERE id = $1', [
+      id,
+    ]);
+    if (user.rows.length === 0) {
+      response.status(404).send('User not found');
+    } else {
+      response.status(200).json(user.rows[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    response.status(500).send('Error');
   }
 });
 
