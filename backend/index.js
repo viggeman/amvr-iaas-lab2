@@ -2,13 +2,14 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const { Client } = require('pg');
+import userRoutes from './routes/user';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const client = new Client({
+export const client = new Client({
   connectionString: process.env.PGURI,
 });
 
@@ -54,6 +55,8 @@ app.get('/api/users/:id', async (request, response) => {
     response.status(500).send('Error');
   }
 });
+
+app.use('/api/users', userRoutes);
 
 app.use(express.static(path.join(path.resolve(), 'dist')));
 
