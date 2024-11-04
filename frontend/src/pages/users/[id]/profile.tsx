@@ -2,11 +2,6 @@ import { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './profile.module.css';
 
-// interface Props {
-//
-// }
-type Props = object;
-
 interface User {
   id?: number;
   name: string;
@@ -14,6 +9,9 @@ interface User {
   email_address: string;
   created_at: string;
   modified_at: string;
+}
+interface Props {
+  User: User;
 }
 
 const UserProfile: FC<Props> = () => {
@@ -31,7 +29,10 @@ const UserProfile: FC<Props> = () => {
     const fetchData = async () => {
       try {
         console.log('id', id);
-        const response = await fetch('/api/users/' + id);
+        const response = await fetch(`/api/users/${id}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
         const data = await response.json();
         setUser(data);
         console.log('data', data);
@@ -46,13 +47,17 @@ const UserProfile: FC<Props> = () => {
   return (
     <div className={styles.container}>
       <h1>User Profile: {id}</h1>
-      <div key={user.id}>
-        <div>Name: {user.name}</div>
-        <div>Last Name: {user.last_name}</div>
-        <div>Email Address: {user.email_address}</div>
-        <div>Created At: {user.created_at}</div>
-        <div>Updated At: {user.modified_at}</div>
-      </div>
+      {user.id !== undefined ? (
+        <div key={user.id}>
+          <div>Name: {user.name}</div>
+          <div>Last Name: {user.last_name}</div>
+          <div>Email Address: {user.email_address}</div>
+          <div>Created At: {user.created_at}</div>
+          <div>Updated At: {user.modified_at}</div>
+        </div>
+      ) : (
+        <div>No profile data found</div>
+      )}
     </div>
   );
 };
