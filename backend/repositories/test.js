@@ -1,5 +1,5 @@
 const db = require('../utils');
-// import { type Request } from 'express';
+
 const getTest = async (req, res) => {
   try {
     const users = await db.query('SELECT * FROM app_user');
