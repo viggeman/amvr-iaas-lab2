@@ -8,7 +8,7 @@ export const routes: RouteObject[] = [
     element: <Home />,
   },
   {
-    path: '/users/:id/profile',
+    path: '/users/:name/profile',
     element: <UserProfile />,
   },
 ];
