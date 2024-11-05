@@ -10,11 +10,8 @@ interface User {
   created_at: string;
   modified_at: string;
 }
-interface Props {
-  User: User;
-}
 
-const UserProfile: FC<Props> = () => {
+const UserProfile: FC = () => {
   const { id } = useParams();
   const [user, setUser] = useState<User>({
     id: undefined,

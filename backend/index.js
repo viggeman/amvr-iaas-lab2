@@ -2,14 +2,18 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const { Client } = require('pg');
-import userRoutes from './routes/user';
+// import userRoutes from './routes/user';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-export const client = new Client({
+// export const client = new Client({
+//   connectionString: process.env.PGURI,
+// });
+
+const client = new Client({
   connectionString: process.env.PGURI,
 });
 
@@ -56,7 +60,7 @@ app.get('/api/users/:id', async (request, response) => {
   }
 });
 
-app.use('/api/users', userRoutes);
+// app.use('/api/users', userRoutes);
 
 app.use(express.static(path.join(path.resolve(), 'dist')));
 
