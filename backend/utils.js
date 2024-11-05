@@ -1,10 +1,10 @@
 const dotenv = require('dotenv');
-const { Client } = require('pg');
+const { Pool } = require('pg');
 dotenv.config();
 console.log(process.env.PGURI);
 
-const client = new Client({
+const pool = new Pool({
   connectionString: process.env.PGURI,
 });
 
-module.exports = client;
+module.exports = pool;
