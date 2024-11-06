@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 import { client } from '../index';
 
-client.connect();
+// client.connect();
 
 interface User {
   role: string;
