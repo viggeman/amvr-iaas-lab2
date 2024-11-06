@@ -14,7 +14,7 @@ app.use(express.json());
 
 // app.use('/api', testRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api', postRoutes);
+app.use('/api/posts', postRoutes);
 
 // For building dist
 // app.use(express.static(path.join(path.resolve(), 'dist')));
