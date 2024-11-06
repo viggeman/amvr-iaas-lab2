@@ -12,7 +12,7 @@ exports.getAllPosts = async (req, res) => {
 
 exports.getAllPostsWithComments = async (req, res) => {
   try {
-    // 1. Fetch all posts
+    // Fetch all posts
     const postsResult = await db.query(`
       SELECT
         p.*,
@@ -24,14 +24,14 @@ exports.getAllPostsWithComments = async (req, res) => {
     `);
 
     const posts = postsResult.rows;
-    console.log('posts', posts);
 
-    // 2. Fetch comments for all posts
+    // Fetch comments for all posts
     const commentsResult = await db.query(`
       SELECT
         c.id,
         c.content,
         c.created_at,
+        c.modified_at,
         au.id,
         au.first_name,
         au.last_name,
@@ -42,7 +42,7 @@ exports.getAllPostsWithComments = async (req, res) => {
 
     const comments = commentsResult.rows;
 
-    // 3. Group comments by post_id
+    // Group comments by post_id
     const commentsByPostId = {};
     comments.forEach((comment) => {
       if (!commentsByPostId[comment.post_id]) {
@@ -51,7 +51,7 @@ exports.getAllPostsWithComments = async (req, res) => {
       commentsByPostId[comment.post_id].push(comment);
     });
 
-    // 4. Combine posts and comments
+    // Combine posts and comments
     const response = posts.map((post) => ({
       ...post,
       comments: commentsByPostId[post.id] || [],
@@ -68,39 +68,33 @@ exports.getPostById = async (req, res) => {
   const { postId } = req.params;
 
   try {
-    // 1. Fetch the post data
+    // Fetch the post data
     const postResult = await db.query(
       `
       SELECT
-        p.id AS post_id,
-        p.title AS post_title,
-        p.content AS post_content,
-        p.created_at AS post_created_at,
-        au.id AS author_id,
-        au.first_name AS author_first_name,
-        au.last_name AS author_last_name
+        p.*,
+        au.id,
+        au.first_name,
+        au.last_name
       FROM post p
       JOIN app_user au ON p.app_user_id = au.id
       WHERE p.id = $1
     `,
       [postId]
     );
-
     const post = postResult.rows[0];
+
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
 
-    // 2. Fetch the comments for the post
+    // Fetch the comments for the post
     const commentsResult = await db.query(
       `
       SELECT
-        c.id AS comment_id,
-        c.content AS comment_content,
-        c.created_at AS comment_created_at,
-        au.id AS commenter_id,
-        au.first_name AS commenter_first_name,
-        au.last_name AS commenter_last_name
+        c.*,
+        au.first_name,
+        au.last_name
       FROM comment c
       JOIN app_user au ON c.app_user_id = au.id
       WHERE c.post_id = $1
@@ -110,13 +104,12 @@ exports.getPostById = async (req, res) => {
 
     const comments = commentsResult.rows;
 
-    // 3. Combine the post and comments
+    // Combine the post and comments
     const response = {
       ...post,
       comments,
     };
-
-    res.status(200).res.json(response);
+    res.status(200).json(response);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch post and comments' });
@@ -127,17 +120,14 @@ exports.getPostsByUser = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    // 1. Fetch posts created by the user
+    // Fetch posts created by user
     const postsResult = await db.query(
       `
       SELECT
-        p.id AS post_id,
-        p.title AS post_title,
-        p.content AS post_content,
-        p.created_at AS post_created_at,
+        p.*,
         au.id AS author_id,
-        au.first_name AS author_first_name,
-        au.last_name AS author_last_name
+        au.first_name,
+        au.last_name
       FROM post p
       JOIN app_user au ON p.app_user_id = au.id
       WHERE p.app_user_id = $1
@@ -147,17 +137,19 @@ exports.getPostsByUser = async (req, res) => {
 
     const posts = postsResult.rows;
 
-    // 2. Fetch comments for these posts
-    const postIds = posts.map((post) => post.post_id);
+    // Fetch comments for the posts
+    const postIds = posts.map((post) => post.id);
+    console.log('postIds', postIds);
     const commentsResult = await db.query(
       `
       SELECT
-        c.id AS comment_id,
-        c.content AS comment_content,
-        c.created_at AS comment_created_at,
-        au.id AS commenter_id,
-        au.first_name AS commenter_first_name,
-        au.last_name AS commenter_last_name,
+        c.id,
+        c.content,
+        c.created_at,
+        c.modified_at,
+        au.id,
+        au.first_name,
+        au.last_name,
         c.post_id
       FROM comment c
       JOIN app_user au ON c.app_user_id = au.id
@@ -168,7 +160,7 @@ exports.getPostsByUser = async (req, res) => {
 
     const comments = commentsResult.rows;
 
-    // 3. Group comments by post_id
+    // Group comments by post_id
     const commentsByPostId = {};
     comments.forEach((comment) => {
       if (!commentsByPostId[comment.post_id]) {
@@ -177,13 +169,13 @@ exports.getPostsByUser = async (req, res) => {
       commentsByPostId[comment.post_id].push(comment);
     });
 
-    // 4. Combine posts and comments
+    // Combine posts and comments
     const response = posts.map((post) => ({
       ...post,
-      comments: commentsByPostId[post.post_id] || [],
+      comments: commentsByPostId[post.id] || [],
     }));
 
-    res.status(200).res.json(response);
+    res.status(200).json(response);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch posts and comments' });
@@ -197,23 +189,20 @@ exports.deletePost = async (req, res) => {
   try {
     await db.query('BEGIN');
 
-    // Delete comments for the post
-    await db.query(
-      `
-        DELETE FROM comment
-        WHERE post_id = $1
-      `,
+    const deleteCommentsResult = await db.query(
+      'DELETE FROM comment WHERE post_id = $1',
       [postId]
     );
+    if (deleteCommentsResult.rowCount === 0) {
+      throw new Error('No comments found for this post');
+    }
 
-    // Delete the post
-    await db.query(
-      `
-        DELETE FROM post
-        WHERE id = $1
-      `,
-      [postId]
-    );
+    const deletePostResult = await db.query('DELETE FROM post WHERE id = $1', [
+      postId,
+    ]);
+    if (deletePostResult.rowCount === 0) {
+      throw new Error('Post not found');
+    }
 
     await db.query('COMMIT');
 
@@ -222,5 +211,77 @@ exports.deletePost = async (req, res) => {
     await db.query('ROLLBACK');
     console.error(error);
     res.status(500).json({ error: 'Failed to delete post' });
+  }
+};
+
+// controllers/postController.js
+
+// ... (other functions: getPostData, getCommentsForPost, createPost, createComment, etc.)
+
+exports.deleteComment = async (req, res) => {
+  const { commentId } = req.params;
+
+  try {
+    // Delete the comment from the database
+    const result = await db.query(
+      `
+      DELETE FROM comment
+      WHERE id = $1;
+    `,
+      [commentId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Comment not found' });
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete comment' });
+  }
+};
+
+exports.createPost = async (req, res) => {
+  const { title, content, app_user_id } = req.body;
+
+  try {
+    const result = await db.query(
+      `
+      INSERT INTO post (title, content, app_user_id)
+      VALUES ($1, $2, $3)
+      RETURNING *;
+    `,
+      [title, content, app_user_id]
+    );
+
+    const newPost = result.rows[0];
+
+    res.status(201).json(newPost);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create post' });
+  }
+};
+
+exports.createComment = async (req, res) => {
+  const { content, app_user_id, post_id } = req.body;
+
+  try {
+    const result = await db.query(
+      `
+      INSERT INTO comment (content, app_user_id, post_id)
+      VALUES ($1, $2, $3)
+      RETURNING *;
+    `,
+      [content, app_user_id, post_id]
+    );
+
+    const newComment = result.rows[0];
+
+    res.status(201).json(newComment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create comment' });
   }
 };
