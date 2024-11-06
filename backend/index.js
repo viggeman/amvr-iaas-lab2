@@ -18,6 +18,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api', postRoutes);
 app.use('/api/Profile', profileRoutes);
 
+
 // For building dist
 // app.use(express.static(path.join(path.resolve(), 'dist')));
 
