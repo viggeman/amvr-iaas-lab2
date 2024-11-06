@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const testRoutes = require('./routes/test');
+const adminRoutes = require('./routes/admin');
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use('/api', testRoutes);
+app.use('/api/admin', adminRoutes);
 
 // For building dist
 // app.use(express.static(path.join(path.resolve(), 'dist')));
