@@ -9,7 +9,6 @@ exports.getAllUsers = async (req, res) => {
       FROM app_user
       LEFT JOIN address ON app_user.address = address.id
       `);
-    console.log(users.rows[0].role);
     return res.status(200).json(users.rows);
   } catch (error) {
     console.error(error);
@@ -67,6 +66,20 @@ exports.modifyUser = async (req, res) => {
       id,
     ];
     const result = await db.query(text, values);
+    return res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Error fetching data');
+  }
+};
+// Delete a user
+exports.deleteUser = async (req, res) => {
+  const { id } = req.body;
+  try {
+    const result = await db.query(
+      'DELETE from app_user WHERE app_user.id = $1',
+      [id]
+    );
     return res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
