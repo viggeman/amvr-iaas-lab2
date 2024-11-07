@@ -36,15 +36,23 @@ const Admin = () => {
     <div className={styles.main}>
       {result !== null &&
         result.map((user) => (
-          <div key={user.id}>
-            <p>{user.id}</p>
-            <p>{user.role}</p>
-            <p>{user.first_name}</p>
-            <p>{user.last_name}</p>
-            <p>{user.email_address}</p>
-            <p>{user.password}</p>
-            <p>{user.date_of_birth}</p>
-            <p>{user.address}</p>
+          <div key={user.id} className={styles.table}>
+            <span>Id:</span>
+            <span>Role:</span>
+            <span>First Name:</span>
+            <span>Last Name:</span>
+            <span>Email address:</span>
+            <span>Password:</span>
+            <span>Date of birth:</span>
+            <span>AddressId:</span>
+            <span>{user.id}</span>
+            <span>{user.role}</span>
+            <span>{user.first_name}</span>
+            <span>{user.last_name}</span>
+            <span>{user.email_address}</span>
+            <span>{user.password}</span>
+            <span>{user.date_of_birth}</span>
+            <span>{user.address}</span>
           </div>
         ))}
     </div>
