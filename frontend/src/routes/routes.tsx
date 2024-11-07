@@ -1,7 +1,8 @@
 import { RouteObject } from 'react-router-dom';
-import Home from '../pages/Home';
-import UserProfile from '../pages/users/[id]/profile';
 import Admin from '../pages/Admin';
+import Home from '../pages/Home';
+import Posts from '../pages/posts/Posts';
+import UserProfile from '../pages/users/[id]/profile';
 
 export const routes: RouteObject[] = [
   {
@@ -15,5 +16,9 @@ export const routes: RouteObject[] = [
   {
     path: '/auth/admin',
     element: <Admin />,
+  },
+  {
+    path: '/posts',
+    element: <Posts />,
   },
 ];
