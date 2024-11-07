@@ -1,10 +1,14 @@
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
+
+//Import routes
 // const testRoutes = require('./routes/test');
 const adminRoutes = require('./routes/adminRoutes');
 const postRoutes = require('./routes/postRoutes');
 const profileRoutes = require('./routes/profile');
+const authRoutes = require('./routes/authRoutes')
+
 
 dotenv.config();
 
@@ -13,10 +17,13 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+
+// Define specific routes first
 // app.use('/api', testRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api', postRoutes);
-app.use('/api/Profile', profileRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api', postRoutes); // Keep more general routes last
 
 // For building dist
 // app.use(express.static(path.join(path.resolve(), 'dist')));
