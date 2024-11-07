@@ -1,6 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import styles from './Admin.module.css';
+
+interface Users {
+  id: string;
+  role: string;
+  first_name: string;
+  last_name: string;
+  email_address: string;
+  password: string;
+  date_of_birth: string;
+  address: string;
+}
 
 const Admin = () => {
+  const [result, setResult] = useState<null | Users[]>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -10,6 +24,7 @@ const Admin = () => {
         }
         const data = await response.json();
         console.log(data);
+        setResult(data);
       } catch (error) {
         console.error(error);
       }
@@ -17,7 +32,23 @@ const Admin = () => {
 
     fetchData();
   }, []);
-  return <h2>Hej</h2>;
+  return (
+    <div className={styles.main}>
+      {result !== null &&
+        result.map((user) => (
+          <div key={user.id}>
+            <p>{user.id}</p>
+            <p>{user.role}</p>
+            <p>{user.first_name}</p>
+            <p>{user.last_name}</p>
+            <p>{user.email_address}</p>
+            <p>{user.password}</p>
+            <p>{user.date_of_birth}</p>
+            <p>{user.address}</p>
+          </div>
+        ))}
+    </div>
+  );
 };
 
 export default Admin;
