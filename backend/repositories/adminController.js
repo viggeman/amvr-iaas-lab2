@@ -1,5 +1,5 @@
 const db = require('../utils');
-
+// See all user data
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await db.query(`
@@ -9,13 +9,14 @@ exports.getAllUsers = async (req, res) => {
       FROM app_user
       LEFT JOIN address ON app_user.address = address.id
       `);
+    console.log(users.rows[0].role);
     return res.status(200).json(users.rows);
   } catch (error) {
     console.error(error);
     return res.status(500).send('Error fetching data');
   }
 };
-
+// See user address
 exports.getUserAddress = async (req, res) => {
   const { id } = req.body;
   try {
@@ -29,15 +30,44 @@ exports.getUserAddress = async (req, res) => {
     return res.status(500).send('Error fetching data');
   }
 };
-
+// Modify column/columns for user
 exports.modifyUser = async (req, res) => {
-  const { emailAddress, id } = req.body;
-  console.log(req.body);
+  const {
+    role,
+    firstName,
+    lastName,
+    emailAddress,
+    password,
+    dateOfBirth,
+    address,
+    id,
+  } = req.body;
   try {
-    const text = 'UPDATE app_user SET email_address = $1 WHERE id = $2';
-    const values = [emailAddress, id];
-    const users = await db.query(text, values);
-    return res.status(200).json(users.rows);
+    const text = `
+      UPDATE app_user as au
+        SET
+        role = $1,
+        first_name = $2,
+        last_name = $3,
+        email_address = $4,
+        password = $5,
+        date_of_birth = $6,
+        address = $7
+      WHERE
+        au.id = $8
+        `;
+    const values = [
+      role,
+      firstName,
+      lastName,
+      emailAddress,
+      password,
+      dateOfBirth,
+      address,
+      id,
+    ];
+    const result = await db.query(text, values);
+    return res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
     return res.status(500).send('Error fetching data');
