@@ -25,14 +25,12 @@ const UserProfile: FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('id', id);
-        const response = await fetch(`/api/users/${id}`);
+        const response = await fetch(`/api/profile?id=${id}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setUser(data);
-        console.log('data', data);
+        setUser(data[0]);
       } catch (error) {
         console.error(error);
       }
