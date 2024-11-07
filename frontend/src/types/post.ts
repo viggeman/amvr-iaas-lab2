@@ -4,8 +4,8 @@ export interface Post {
   content: string;
   created_at: string;
   author_id: string;
-  first_name: string;
-  last_name: string;
+  f_name: string;
+  l_name: string;
   comments: Comment[];
 }
 
