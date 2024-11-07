@@ -16,6 +16,20 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+exports.getUserAddress = async (req, res) => {
+  const { id } = req.body;
+  try {
+    const address = await db.query(
+      'SELECT * FROM address WHERE address.id = $1',
+      [id]
+    );
+    return res.status(200).json(address.rows);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Error fetching data');
+  }
+};
+
 exports.modifyUser = async (req, res) => {
   const { emailAddress, id } = req.body;
   console.log(req.body);
