@@ -1,5 +1,5 @@
 import { RouteObject } from 'react-router-dom';
-import Admin from '../pages/Admin';
+import Admin from '../pages/admin/Admin';
 import Home from '../pages/Home';
 import Posts from '../pages/posts/Posts';
 import UserProfile from '../pages/users/[id]/profile';

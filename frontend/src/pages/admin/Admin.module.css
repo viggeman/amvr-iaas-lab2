@@ -1,0 +1,19 @@
+.main {
+  min-height: 100dvh;
+  height: 100%;
+  background-color: slategray;
+}
+
+.table {
+  font-size: 15px;
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.table > span {
+  padding: 8px 4px;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
