@@ -45,6 +45,7 @@ const Admin = () => {
             <span>Password:</span>
             <span>Date of birth:</span>
             <span>AddressId:</span>
+            <span>Dummy field:</span>
             <span>{user.id}</span>
             <span>{user.role}</span>
             <span>{user.first_name}</span>
@@ -53,6 +54,7 @@ const Admin = () => {
             <span>{user.password}</span>
             <span>{user.date_of_birth}</span>
             <span>{user.address}</span>
+            <span>Dummy data</span>
           </div>
         ))}
     </div>
