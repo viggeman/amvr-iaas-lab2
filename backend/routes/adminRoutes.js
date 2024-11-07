@@ -5,10 +5,10 @@ const {
 } = require('../repositories/adminController');
 const express = require('express');
 
-const adminRoute = express.Router();
+const routes = express.Router();
 
-adminRoute.get('/', getAllUsers);
-adminRoute.put('/modify-user', modifyUser);
-adminRoute.get('/user-address', getUserAddress);
+routes.get('/', getAllUsers);
+routes.put('/modify-user', modifyUser);
+routes.get('/user-address', getUserAddress);
 
-module.exports = adminRoute;
+module.exports = routes;
