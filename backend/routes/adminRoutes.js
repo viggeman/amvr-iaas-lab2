@@ -1,9 +1,9 @@
-const { getAllUsers, modifyUser } = require('../repositories/admin');
+const { getAllUsers, modifyUser } = require('../repositories/adminController');
 const express = require('express');
 
 const adminRoute = express.Router();
 
 adminRoute.get('/', getAllUsers);
-adminRoute.post('/modify-user', modifyUser);
+adminRoute.put('/modify-user', modifyUser);
 
 module.exports = adminRoute;

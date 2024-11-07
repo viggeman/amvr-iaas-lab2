@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 // const testRoutes = require('./routes/test');
-const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/adminRoutes');
 const postRoutes = require('./routes/postRoutes');
 const profileRoutes = require('./routes/profile');
 
@@ -17,7 +17,6 @@ app.use(express.json());
 app.use('/api/admin', adminRoutes);
 app.use('/api', postRoutes);
 app.use('/api/Profile', profileRoutes);
-
 
 // For building dist
 // app.use(express.static(path.join(path.resolve(), 'dist')));
