@@ -182,41 +182,56 @@ exports.getPostsByUser = async (req, res) => {
   }
 };
 
+/* Save if deletePost dont act safe */
+// exports.deletePostWComments = async (req, res) => {
+//   const { postId } = req.params;
+//   console.log('postId', postId);
+
+//   try {
+//     await db.query('BEGIN');
+
+//     const deleteCommentsResult = await db.query(
+//       'DELETE FROM comment WHERE post_id = $1',
+//       [postId]
+//     );
+//     if (deleteCommentsResult.rowCount === 0) {
+//       throw new Error('No comments found for this post');
+//     }
+
+//     const deletePostResult = await db.query('DELETE FROM post WHERE id = $1', [
+//       postId,
+//     ]);
+//     if (deletePostResult.rowCount === 0) {
+//       throw new Error('Post not found');
+//     }
+
+//     await db.query('COMMIT');
+
+//     res.status(204).send(`post and comments för id: ${postId} deleted`);
+//   } catch (error) {
+//     await db.query('ROLLBACK');
+//     console.error(error);
+//     res.status(500).json({ error: 'Failed to delete post' });
+//   }
+// };
+
 exports.deletePost = async (req, res) => {
   const { postId } = req.params;
   console.log('postId', postId);
 
   try {
-    await db.query('BEGIN');
-
-    const deleteCommentsResult = await db.query(
-      'DELETE FROM comment WHERE post_id = $1',
-      [postId]
-    );
-    if (deleteCommentsResult.rowCount === 0) {
-      throw new Error('No comments found for this post');
+    const result = await db.query(`DELETE FROM post WHERE id = $1;`, [postId]);
+    console.log('result', result);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Post not found' });
     }
-
-    const deletePostResult = await db.query('DELETE FROM post WHERE id = $1', [
-      postId,
-    ]);
-    if (deletePostResult.rowCount === 0) {
-      throw new Error('Post not found');
-    }
-
-    await db.query('COMMIT');
 
     res.status(204).send(`post and comments för id: ${postId} deleted`);
   } catch (error) {
-    await db.query('ROLLBACK');
     console.error(error);
     res.status(500).json({ error: 'Failed to delete post' });
   }
 };
-
-// controllers/postController.js
-
-// ... (other functions: getPostData, getCommentsForPost, createPost, createComment, etc.)
 
 exports.deleteComment = async (req, res) => {
   const { commentId } = req.params;
