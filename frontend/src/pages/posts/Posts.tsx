@@ -3,11 +3,7 @@ import CreatePost from '../../components/PostComment/CreatePost';
 import { Post } from '../../types/post';
 import styles from './Posts.module.css';
 
-interface Props {
-  posts: Post[];
-}
-
-const Posts: FC<Props> = () => {
+const Posts: FC = () => {
   const [fetchedPosts, setFetchedPosts] = useState<Post[]>([]);
 
   const timeSince = useMemo(() => {
@@ -36,34 +32,52 @@ const Posts: FC<Props> = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch('/api/posts/posts-w-comments');
-        const data = await response.json();
-        console.log('Posts:', data);
-        setFetchedPosts(data);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      }
-    };
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('/api/posts/posts-w-comments');
+      const data = await response.json();
+      console.log('Posts:', data);
+      setFetchedPosts(data);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
 
+  const fetchPostById = async (postId: string) => {
+    console.log('postid', postId);
+    try {
+      const response = await fetch(`/api/posts/${postId}`);
+      const data = await response.json();
+      console.log('Posts:', data);
+      return data;
+    } catch (error) {
+      console.error('Error fetching post:', error);
+    }
+  };
+
+  useEffect(() => {
     fetchPosts();
   }, []);
+
+  const handlePostCreated = async (newPost: string) => {
+    console.log('newpost in posts', newPost);
+    const nextPost = await fetchPostById(newPost);
+
+    setFetchedPosts([nextPost, ...fetchedPosts]);
+  };
+
   return (
     <div className={styles.container}>
       <div>
         <h2>Create post</h2>
-        <CreatePost />
+        <CreatePost onPostCreated={handlePostCreated} />
       </div>
       {fetchedPosts.map((post) => (
         <div key={post.id} className={styles.postContainer}>
           <div className={styles.post}>
             <div className={styles.postContent}>
               <div className={styles.author}>
-                <span>
-                  {post.f_name} {post.l_name}
-                </span>
+                <span>{post.username}</span>
               </div>
               <h2 className={styles.postTitle}>{post.title}</h2>
               <p className={styles.postText}>{post.content}</p>
@@ -76,9 +90,7 @@ const Posts: FC<Props> = () => {
             <div key={comment.id} className={styles.commentContainer}>
               <div className={styles.comment}>
                 <div className={styles.commentBy}>
-                  <span>
-                    {comment.first_name} {comment.last_name}
-                  </span>
+                  <span>{comment.username}</span>
                 </div>
                 <p className={styles.commentText}>{comment.content}</p>
               </div>

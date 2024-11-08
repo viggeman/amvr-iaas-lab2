@@ -16,9 +16,7 @@ exports.getAllPostsWithComments = async (req, res) => {
     const postsResult = await db.query(`
       SELECT
         p.*,
-        au.id AS author_id,
-        au.first_name AS f_name,
-        au.last_name AS l_name
+        au.first_name || ' ' || au.last_name AS username
       FROM post p
       JOIN app_user au ON p.app_user_id = au.id
     `);
@@ -32,9 +30,7 @@ exports.getAllPostsWithComments = async (req, res) => {
         c.content,
         c.created_at,
         c.modified_at,
-        au.id,
-        au.first_name,
-        au.last_name,
+        au.first_name || ' ' || au.last_name AS username,
         c.post_id
       FROM comment c
       JOIN app_user au ON c.app_user_id = au.id
@@ -76,9 +72,7 @@ exports.getPostById = async (req, res) => {
       `
       SELECT
         p.*,
-        au.id,
-        au.first_name,
-        au.last_name
+        au.first_name || ' ' || au.last_name AS username
       FROM post p
       JOIN app_user au ON p.app_user_id = au.id
       WHERE p.id = $1
@@ -96,8 +90,7 @@ exports.getPostById = async (req, res) => {
       `
       SELECT
         c.*,
-        au.first_name,
-        au.last_name
+        au.first_name || ' ' || au.last_name AS username
       FROM comment c
       JOIN app_user au ON c.app_user_id = au.id
       WHERE c.post_id = $1
@@ -128,7 +121,6 @@ exports.getPostsByUser = async (req, res) => {
       `
       SELECT
         p.*,
-        au.id AS author_id,
         au.first_name,
         au.last_name
       FROM post p
@@ -275,7 +267,7 @@ exports.createPost = async (req, res) => {
 
     const newPost = result.rows[0];
 
-    res.status(201).json(newPost);
+    res.status(201).json(newPost.id);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to create post' });

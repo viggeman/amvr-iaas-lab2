@@ -1,21 +1,15 @@
 import { FC, useState } from 'react';
+import { PostData } from '../../types/post';
 import styles from './CreatePost.module.css';
 
-interface PostData {
-  title: string;
-  content: string;
-  app_user_id: string;
+interface Props {
+  onPostCreated: (newPost: string) => void;
 }
 
-interface PostResponse {
-  ok: boolean;
-  json: () => Promise<{ message: string; data: object }>;
-}
-
-const CreatePost: FC = () => {
+const CreatePost: FC<Props> = ({ onPostCreated }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [appUserId, setAppUserId] = useState(''); // You might need to fetch or manage this dynamically
+  const [appUserId, setAppUserId] = useState('');
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
@@ -29,7 +23,7 @@ const CreatePost: FC = () => {
     console.log('body', newPost);
 
     try {
-      const response: PostResponse = await fetch('/api/posts', {
+      const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,6 +33,9 @@ const CreatePost: FC = () => {
 
       if (response.ok) {
         console.log('Post created successfully!');
+        const newPost: string = await response.json();
+        console.log('newpost', newPost);
+        onPostCreated(newPost);
         setTitle('');
         setAppUserId('');
         setContent('');
