@@ -5,14 +5,14 @@ import { User } from '../../types/user';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 type Inputs = {
-  userId: string;
-  userRole: string;
-  userFirstName: string;
-  userLastName: string;
-  userEmailAddress: string;
-  userPassword: string;
+  role: string;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  password: string;
   dateOfBirth: string;
   addressId: string;
+  id: string;
 };
 
 const AdminModify = () => {
@@ -25,8 +25,24 @@ const AdminModify = () => {
     // watch,
     // formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) =>
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log('Submitted:', data);
+    const body = data;
+    try {
+      const response = await fetch(`/api/admin/modify-user`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      console.log(JSON.stringify(body));
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      // const data = await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,42 +67,35 @@ const AdminModify = () => {
       {result !== null &&
         result.map((user) => (
           <div key={user.id} className={styles.user}>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <p>
-                <strong>Id: </strong>
-                <input defaultValue={user.id} {...register('userId')} />
-              </p>
+            <form onSubmit={handleSubmit(onSubmit)} method="PUT">
               <p>
                 <strong>Role: </strong>
-                <input defaultValue={user.role} {...register('userRole')} />
+                <input defaultValue={user.role} {...register('role')} />
               </p>
               <p>
                 <strong>First Name: </strong>
                 <input
                   defaultValue={user.first_name}
-                  {...register('userFirstName')}
+                  {...register('firstName')}
                 />
               </p>
               <p>
                 <strong>Last Name: </strong>
                 <input
                   defaultValue={user.last_name}
-                  {...register('userLastName')}
+                  {...register('lastName')}
                 />
               </p>
               <p>
                 <strong>Email address: </strong>
                 <input
                   defaultValue={user.email_address}
-                  {...register('userEmailAddress')}
+                  {...register('emailAddress')}
                 />
               </p>
               <p>
                 <strong>Password: </strong>
-                <input
-                  defaultValue={user.password}
-                  {...register('userPassword')}
-                />
+                <input defaultValue={user.password} {...register('password')} />
               </p>
               <p>
                 <strong>Date of birth: </strong>
@@ -105,6 +114,10 @@ const AdminModify = () => {
                 ) : (
                   'N/A'
                 )}
+              </p>
+              <p>
+                <strong>Id: </strong>
+                <input defaultValue={user.id} {...register('id')} />
               </p>
               <input type="submit" />
             </form>
