@@ -50,10 +50,12 @@ const Admin = () => {
               className={styles.userContainer}
               onClick={() => handleClick(user.id)}
             >
-              <p>
-                <strong>Id: </strong>
-                {user.id}
-              </p>
+              <button>
+                <p>
+                  <strong>Id: </strong>
+                  {user.id}
+                </p>
+              </button>
               <p>
                 <strong>Role: </strong>
                 {user.role}
@@ -80,7 +82,7 @@ const Admin = () => {
               </p>
               <p>
                 <strong>AddressId: </strong>
-                {user.address ?? 'Not specified'}
+                {user.address ?? 'N/A'}
               </p>
             </div>
           ))}
