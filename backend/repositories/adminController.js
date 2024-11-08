@@ -17,7 +17,7 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-  const id = req.query;
+  const { id } = req.params;
   try {
     const user = await db.query(
       `
