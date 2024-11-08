@@ -7,8 +7,7 @@ const dotenv = require('dotenv');
 const adminRoutes = require('./routes/adminRoutes');
 const postRoutes = require('./routes/postRoutes');
 const profileRoutes = require('./routes/profile');
-const authRoutes = require('./routes/authRoutes')
-
+const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
 
@@ -16,7 +15,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-
 
 // Define specific routes first
 // app.use('/api', testRoutes);
