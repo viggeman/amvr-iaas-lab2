@@ -1,8 +1,15 @@
+const {
+  getProfile,
+  editProfile,
+  deleteProfile,
+} = require('../repositories/profile');
+
 const express = require('express');
-const getProfile = require('../repositories/profile');
 
 const profileRoutes = express.Router();
 
-profileRoutes.get('/profile', getProfile);
+profileRoutes.get('/', getProfile);
+profileRoutes.put('/edit-profile', editProfile);
+profileRoutes.delete('/delete-profile', deleteProfile);
 
 module.exports = profileRoutes;
