@@ -15,6 +15,13 @@ interface Users {
 const Admin = () => {
   const [result, setResult] = useState<null | Users[]>(null);
 
+  function handleClick(id: string) {
+    const user = document.getElementById(id);
+    if (user !== null) {
+      console.log(user.id);
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,7 +44,12 @@ const Admin = () => {
       <div className={styles.table}>
         {result !== null &&
           result.map((user) => (
-            <div key={user.id} className={styles.userContainer}>
+            <div
+              key={user.id}
+              id={user.id}
+              className={styles.userContainer}
+              onClick={() => handleClick(user.id)}
+            >
               <p>
                 <strong>Id: </strong>
                 {user.id}
