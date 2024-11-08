@@ -48,7 +48,9 @@ const Admin = () => {
               key={user.id}
               id={user.id}
               className={styles.userContainer}
-              onClick={() => handleClick(user.id)}
+              onClick={() => {
+                handleClick(user.id);
+              }}
             >
               <button>
                 <p>
