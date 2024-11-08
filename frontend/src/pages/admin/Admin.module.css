@@ -4,6 +4,7 @@
   background-color: slategray;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .table {
@@ -26,6 +27,7 @@
 
 .user {
   font-size: 16px;
+  padding: 16px;
   height: fit-content;
   border: solid 1px black;
 }
