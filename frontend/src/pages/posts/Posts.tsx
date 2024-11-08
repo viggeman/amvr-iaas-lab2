@@ -1,4 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
+import CreatePost from '../../components/PostComment/CreatePost';
 import { Post } from '../../types/post';
 import styles from './Posts.module.css';
 
@@ -51,6 +52,10 @@ const Posts: FC<Props> = () => {
   }, []);
   return (
     <div className={styles.container}>
+      <div>
+        <h2>Create post</h2>
+        <CreatePost />
+      </div>
       {fetchedPosts.map((post) => (
         <div key={post.id} className={styles.postContainer}>
           <div className={styles.post}>

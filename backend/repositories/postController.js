@@ -57,6 +57,9 @@ exports.getAllPostsWithComments = async (req, res) => {
       comments: commentsByPostId[post.id] || [],
     }));
 
+    // Sort posts by date descending
+    response.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
     res.status(200).json(response);
   } catch (error) {
     console.error(error);
