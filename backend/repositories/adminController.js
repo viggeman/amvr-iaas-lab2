@@ -1,5 +1,5 @@
 const db = require('../utils');
-// See all user data
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await db.query(`
@@ -15,7 +15,24 @@ exports.getAllUsers = async (req, res) => {
     return res.status(500).send('Error fetching data');
   }
 };
-// See user address
+
+exports.getUser = async (req, res) => {
+  const id = req.query;
+  try {
+    const user = await db.query(
+      `
+      SELECT * FROM app_user
+       WHERE app_user.id = $1
+      `,
+      [id]
+    );
+    return res.status(200).json(user.rows);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Error fetching data');
+  }
+};
+
 exports.getUserAddress = async (req, res) => {
   const { id } = req.body;
   try {
@@ -29,7 +46,7 @@ exports.getUserAddress = async (req, res) => {
     return res.status(500).send('Error fetching data');
   }
 };
-// Modify column/columns for user
+
 exports.modifyUser = async (req, res) => {
   const {
     role,
@@ -72,7 +89,7 @@ exports.modifyUser = async (req, res) => {
     return res.status(500).send('Error fetching data');
   }
 };
-// Delete a user
+
 exports.deleteUser = async (req, res) => {
   const { id } = req.body;
   try {
