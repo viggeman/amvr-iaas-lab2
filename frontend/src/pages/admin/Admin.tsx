@@ -1,19 +1,9 @@
 import { useEffect, useState } from 'react';
 import styles from './Admin.module.css';
-
-interface Users {
-  id: string;
-  role: string;
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  password: string;
-  date_of_birth: string;
-  address: string;
-}
+import { User } from '../../types/user';
 
 const Admin = () => {
-  const [result, setResult] = useState<null | Users[]>(null);
+  const [result, setResult] = useState<null | User[]>(null);
 
   function handleClick(id: string) {
     const user = document.getElementById(id);
