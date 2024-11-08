@@ -1,6 +1,7 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import CreatePost from '../../components/PostComment/CreatePost';
-import { Post } from '../../types/post';
+import AddComment from '../../components/AddComment/AddComment';
+import CreatePost from '../../components/CreatePost/CreatePost';
+import { Comment, Post } from '../../types/post';
 import styles from './Posts.module.css';
 
 const Posts: FC = () => {
@@ -66,6 +67,24 @@ const Posts: FC = () => {
     setFetchedPosts([nextPost, ...fetchedPosts]);
   };
 
+  const handleCommentCreated = (newComment: Comment) => {
+    setFetchedPosts((prevPosts) => {
+      const postIndex = prevPosts.findIndex(
+        (post) => post.id === newComment.post_id
+      );
+      if (postIndex === -1) {
+        return prevPosts; // Post not found, do nothing
+      }
+
+      const updatedPosts = [...prevPosts];
+      updatedPosts[postIndex] = {
+        ...updatedPosts[postIndex],
+        comments: [...updatedPosts[postIndex].comments, newComment],
+      };
+      return updatedPosts;
+    });
+  };
+
   return (
     <div className={styles.container}>
       <div>
@@ -99,6 +118,10 @@ const Posts: FC = () => {
               </div>
             </div>
           ))}
+          <AddComment
+            onCommentCreated={handleCommentCreated}
+            postId={post.id}
+          />
         </div>
       ))}
     </div>

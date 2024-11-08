@@ -12,7 +12,7 @@ export interface Comment {
   id: string;
   content: string;
   created_at: string;
-  commenter_id: string;
+  app_user_id: string;
   username: string;
   post_id: string;
 }
@@ -21,6 +21,12 @@ export interface PostData {
   title: string;
   content: string;
   app_user_id: string;
+}
+
+export interface CommentData {
+  content: string;
+  app_user_id: string;
+  post_id: string;
 }
 
 export interface PostResponse {

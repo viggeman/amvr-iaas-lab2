@@ -274,6 +274,7 @@ exports.createPost = async (req, res) => {
   }
 };
 
+/* Works when user is logged in, can get username otherwise */
 exports.createComment = async (req, res) => {
   const { content, app_user_id, post_id } = req.body;
 
