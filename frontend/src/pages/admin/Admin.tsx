@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
 import styles from './Admin.module.css';
-
-interface Users {
-  id: string;
-  role: string;
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  password: string;
-  date_of_birth: string;
-  address: string;
-}
+import { User } from '../../types/user';
 
 const Admin = () => {
-  const [result, setResult] = useState<null | Users[]>(null);
+  const [result, setResult] = useState<null | User[]>(null);
+
+  function handleClick(id: string) {
+    const user = document.getElementById(id);
+    if (user !== null) {
+      console.log(user.id);
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,29 +31,54 @@ const Admin = () => {
   }, []);
   return (
     <div className={styles.main}>
-      {result !== null &&
-        result.map((user) => (
-          <div key={user.id} className={styles.table}>
-            <span>Id:</span>
-            <span>Role:</span>
-            <span>First Name:</span>
-            <span>Last Name:</span>
-            <span>Email address:</span>
-            <span>Password:</span>
-            <span>Date of birth:</span>
-            <span>AddressId:</span>
-            <span>Dummy field:</span>
-            <span>{user.id}</span>
-            <span>{user.role}</span>
-            <span>{user.first_name}</span>
-            <span>{user.last_name}</span>
-            <span>{user.email_address}</span>
-            <span>{user.password}</span>
-            <span>{user.date_of_birth}</span>
-            <span>{user.address}</span>
-            <span>Dummy data</span>
-          </div>
-        ))}
+      <div className={styles.table}>
+        {result !== null &&
+          result.map((user) => (
+            <div
+              key={user.id}
+              id={user.id}
+              className={styles.userContainer}
+              onClick={() => {
+                handleClick(user.id);
+              }}
+            >
+              <button>
+                <p>
+                  <strong>Id: </strong>
+                  {user.id}
+                </p>
+              </button>
+              <p>
+                <strong>Role: </strong>
+                {user.role}
+              </p>
+              <p>
+                <strong>First Name: </strong>
+                {user.first_name}
+              </p>
+              <p>
+                <strong>Last Name: </strong>
+                {user.last_name}
+              </p>
+              <p>
+                <strong>Email address: </strong>
+                {user.email_address}
+              </p>
+              <p>
+                <strong>Password: </strong>
+                {user.password}
+              </p>
+              <p>
+                <strong>Date of birth: </strong>
+                {user.date_of_birth}
+              </p>
+              <p>
+                <strong>AddressId: </strong>
+                {user.address ?? 'N/A'}
+              </p>
+            </div>
+          ))}
+      </div>
     </div>
   );
 };
