@@ -31,7 +31,7 @@ const Admin = () => {
               <button>
                 <p>
                   <strong>Id: </strong>
-                  {user.id}
+                  <a href={`/auth/admin/modify-user/${user.id}`}>{user.id}</a>
                 </p>
               </button>
               <p>

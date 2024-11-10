@@ -31,3 +31,9 @@
   height: fit-content;
   border: solid 1px black;
 }
+
+a:hover {
+  background-color: lightblue;
+  color: black;
+  cursor: pointer;
+}
