@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './Admin.module.css';
-import { User } from '../../types/user';
+import { User, Address } from '../../types/user';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 type Inputs = {
@@ -16,7 +16,8 @@ type Inputs = {
 };
 
 const AdminModify = () => {
-  const [result, setResult] = useState<null | User[]>(null);
+  const [user, setUser] = useState<null | User[]>(null);
+  const [userAddress, setUserAddress] = useState<null | Address[]>(null);
   const { userId } = useParams();
 
   const {
@@ -45,7 +46,7 @@ const AdminModify = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUser = async () => {
       try {
         const response = await fetch(`/api/admin/get-user/${userId}`);
         if (!response.ok) {
@@ -53,13 +54,26 @@ const AdminModify = () => {
         }
         const data = await response.json();
         console.log('Data:', data);
-        setResult(data);
+        setUser(data);
       } catch (error) {
         console.error(error);
       }
     };
-
-    fetchData();
+    const fetchUserAddress = async () => {
+      try {
+        const response = await fetch(`/api/admin/get-user-address/${userId}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log('Adressdata:', data);
+        setUserAddress(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUser();
+    fetchUserAddress();
   }, [userId]);
 
   return (
@@ -67,8 +81,8 @@ const AdminModify = () => {
       <nav>
         <a href="/auth/admin">Back</a>
       </nav>
-      {result !== null &&
-        result.map((user) => (
+      {user !== null &&
+        user.map((user) => (
           <div key={user.id} className={styles.user}>
             <form onSubmit={handleSubmit(onSubmit)} method="PUT">
               <p>

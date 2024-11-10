@@ -8,3 +8,12 @@ export interface User {
   date_of_birth: string;
   address: string;
 }
+
+export interface Address {
+  uid: string;
+  country: string;
+  city: string;
+  street: string;
+  street_number: number;
+  postal_code: number;
+}
