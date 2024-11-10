@@ -76,6 +76,17 @@ const AdminModify = () => {
     fetchUserAddress();
   }, [userId]);
 
+  let noAddressMsg;
+  const checkAddress = () => {
+    if (userAddress?.length === 0) {
+      noAddressMsg = (
+        <h2>
+          <i>User has not added an address</i>
+        </h2>
+      );
+    }
+  };
+  checkAddress();
   return (
     <div className={styles.main}>
       <nav>
@@ -166,6 +177,7 @@ const AdminModify = () => {
             </p>
           </div>
         ))}
+      {noAddressMsg}
     </div>
   );
 };
