@@ -23,7 +23,7 @@ CREATE TABLE app_user (
 	first_name VARCHAR(50) NOT NULL,
 	last_name VARCHAR(50) NOT NULL,
 	email_address VARCHAR(100) UNIQUE NOT NULL,
-	password VARCHAR(50) NOT NULL,
+	password VARCHAR(100) NOT NULL,
 	date_of_birth DATE NOT NULL,
 	address uuid,
 	FOREIGN KEY(address) REFERENCES address(id) ON DELETE CASCADE,

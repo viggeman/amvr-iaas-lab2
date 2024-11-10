@@ -12,7 +12,7 @@ const Home: FC<Props> = () => {
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();  // Prevents page reload on submit
 
-    fetch('/api/login', {
+    fetch('/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
