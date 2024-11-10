@@ -64,6 +64,9 @@ const AdminModify = () => {
 
   return (
     <div className={styles.main}>
+      <nav>
+        <a href="/auth/admin">Back</a>
+      </nav>
       {result !== null &&
         result.map((user) => (
           <div key={user.id} className={styles.user}>
