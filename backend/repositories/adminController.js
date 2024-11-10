@@ -34,10 +34,13 @@ exports.getUser = async (req, res) => {
 };
 
 exports.getUserAddress = async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
   try {
     const address = await db.query(
-      'SELECT * FROM address WHERE address.id = $1',
+      `SELECT app_user.id as uid, address.country, address.city, address.street,
+              address.street_number, address.postal_code FROM app_user
+              INNER JOIN address ON app_user.address = address.id
+        WHERE app_user.id = $1`,
       [id]
     );
     return res.status(200).json(address.rows);

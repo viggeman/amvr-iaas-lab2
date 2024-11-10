@@ -5,13 +5,6 @@ import { User } from '../../types/user';
 const Admin = () => {
   const [result, setResult] = useState<null | User[]>(null);
 
-  function handleClick(id: string) {
-    const user = document.getElementById(id);
-    if (user !== null) {
-      console.log(user.id);
-    }
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,18 +27,11 @@ const Admin = () => {
       <div className={styles.table}>
         {result !== null &&
           result.map((user) => (
-            <div
-              key={user.id}
-              id={user.id}
-              className={styles.userContainer}
-              onClick={() => {
-                handleClick(user.id);
-              }}
-            >
+            <div key={user.id} id={user.id} className={styles.userContainer}>
               <button>
                 <p>
                   <strong>Id: </strong>
-                  {user.id}
+                  <a href={`/auth/admin/modify-user/${user.id}`}>{user.id}</a>
                 </p>
               </button>
               <p>
