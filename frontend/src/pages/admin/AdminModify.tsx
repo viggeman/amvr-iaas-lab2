@@ -140,6 +140,32 @@ const AdminModify = () => {
             </form>
           </div>
         ))}
+      {userAddress !== null &&
+        userAddress.map((address) => (
+          <div key={address.uid} className={styles.user}>
+            <h3>Address:</h3>
+            <p>
+              <strong>Country: </strong>
+              {address.country}
+            </p>
+            <p>
+              <strong>City: </strong>
+              {address.city}
+            </p>
+            <p>
+              <strong>Street: </strong>
+              {address.street}
+            </p>
+            <p>
+              <strong>Street number: </strong>
+              {address.street_number}
+            </p>
+            <p>
+              <strong>Postal code: </strong>
+              {address.postal_code}
+            </p>
+          </div>
+        ))}
     </div>
   );
 };
