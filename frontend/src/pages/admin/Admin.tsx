@@ -35,6 +35,10 @@ const Admin = () => {
     // formState: { errors },
   } = useForm<Input>();
   const onSubmit: SubmitHandler<Input> = async (data) => {
+    const result = confirm('Are you sure you want to delete this user?');
+    if (result !== true) {
+      return null;
+    }
     console.log('Submitted:', data);
     const body = data;
     try {
@@ -43,11 +47,9 @@ const Admin = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      // console.log(JSON.stringify(body));
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      // const data = await response.json();
     } catch (error) {
       console.error(error);
     }
