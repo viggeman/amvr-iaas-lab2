@@ -62,6 +62,7 @@ const Admin = () => {
                 <strong>AddressId: </strong>
                 {user.address ?? 'N/A'}
               </p>
+              <button className={styles.deleteButton}>Delete user</button>
             </div>
           ))}
       </div>

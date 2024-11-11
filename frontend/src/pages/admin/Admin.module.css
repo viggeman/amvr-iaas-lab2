@@ -57,3 +57,18 @@ nav {
   font-size: 20px;
   margin-bottom: 18px;
 }
+
+.deleteButton {
+  color: red;
+  border: solid 2px #00c5c8;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 14px;
+  margin-bottom: 4px;
+}
+
+.deleteButton:hover {
+  background-color: #00c5c8;
+  color: black;
+}
