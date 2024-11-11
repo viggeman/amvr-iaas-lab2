@@ -27,6 +27,10 @@ const AdminModify = () => {
     // formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const checker = confirm('Are you sure you want to add these changes?');
+    if (checker !== true) {
+      return null;
+    }
     console.log('Submitted:', data);
     const body = data;
     try {
@@ -90,7 +94,9 @@ const AdminModify = () => {
   return (
     <div className={styles.main}>
       <nav>
-        <a href="/auth/admin">Back</a>
+        <a href="/auth/admin" className={styles.backButton}>
+          Back
+        </a>
       </nav>
       {user !== null &&
         user.map((user) => (
@@ -98,11 +104,16 @@ const AdminModify = () => {
             <form onSubmit={handleSubmit(onSubmit)} method="PUT">
               <p>
                 <strong>Role: </strong>
-                <input defaultValue={user.role} {...register('role')} />
+                <input
+                  className={styles.modifyInput}
+                  defaultValue={user.role}
+                  {...register('role')}
+                />
               </p>
               <p>
                 <strong>First Name: </strong>
                 <input
+                  className={styles.modifyInput}
                   defaultValue={user.first_name}
                   {...register('firstName')}
                 />
@@ -110,6 +121,7 @@ const AdminModify = () => {
               <p>
                 <strong>Last Name: </strong>
                 <input
+                  className={styles.modifyInput}
                   defaultValue={user.last_name}
                   {...register('lastName')}
                 />
@@ -117,17 +129,23 @@ const AdminModify = () => {
               <p>
                 <strong>Email address: </strong>
                 <input
+                  className={styles.modifyInput}
                   defaultValue={user.email_address}
                   {...register('emailAddress')}
                 />
               </p>
               <p>
                 <strong>Password: </strong>
-                <input defaultValue={user.password} {...register('password')} />
+                <input
+                  className={styles.modifyInput}
+                  defaultValue={user.password}
+                  {...register('password')}
+                />
               </p>
               <p>
                 <strong>Date of birth: </strong>
                 <input
+                  className={styles.modifyInput}
                   defaultValue={user.date_of_birth}
                   {...register('dateOfBirth')}
                 />
@@ -136,6 +154,7 @@ const AdminModify = () => {
                 <strong>AddressId: </strong>
                 {user.address ? (
                   <input
+                    className={styles.modifyInput}
                     defaultValue={user.address}
                     {...register('addressId')}
                   />
@@ -145,9 +164,17 @@ const AdminModify = () => {
               </p>
               <p>
                 <strong>Id: </strong>
-                <input defaultValue={user.id} {...register('id')} />
+                <input
+                  className={styles.modifyInput}
+                  defaultValue={user.id}
+                  {...register('id')}
+                />
               </p>
-              <input type="submit" />
+              <input
+                className={styles.modifyButton}
+                type="submit"
+                value={'Add changes'}
+              />
             </form>
           </div>
         ))}

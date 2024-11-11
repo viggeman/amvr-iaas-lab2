@@ -95,6 +95,7 @@ exports.modifyUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   const { id } = req.body;
+  console.log(req.body);
   try {
     const result = await db.query(
       'DELETE from app_user WHERE app_user.id = $1',
