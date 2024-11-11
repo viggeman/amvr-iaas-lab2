@@ -28,8 +28,8 @@ const Admin = () => {
         {result !== null &&
           result.map((user) => (
             <div key={user.id} id={user.id} className={styles.userContainer}>
-              <button>
-                <p>
+              <button className={styles.idNavigation}>
+                <p className={styles.id}>
                   <strong>Id: </strong>
                   <a href={`/auth/admin/modify-user/${user.id}`}>{user.id}</a>
                 </p>
