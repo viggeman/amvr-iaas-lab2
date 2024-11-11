@@ -10,6 +10,7 @@ const CreatePost: FC<Props> = ({ onPostCreated }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [appUserId, setAppUserId] = useState('');
+  const [showForm, setShowForm] = useState(false);
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
@@ -39,49 +40,59 @@ const CreatePost: FC<Props> = ({ onPostCreated }) => {
         setTitle('');
         setAppUserId('');
         setContent('');
+        setShowForm(false);
       } else {
         const errorData = await response.json();
-        console.error('Error creating post:', errorData);
+        throw new Error(
+          `Error creating post: ${errorData.message || 'Unknown error'}`
+        );
       }
     } catch (error) {
-      console.error('Error creating post:', error);
+      console.error(error);
     }
   };
 
   return (
     <div className={styles.container}>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <h3>Title</h3>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <h3>Content</h3>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <h3>User ID</h3>
-          <input
-            type="text"
-            id="appUserId"
-            value={appUserId}
-            onChange={(e) => setAppUserId(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Create Post</button>
-      </form>
+      <div className={styles.postContainer}>
+        <button type="button" onClick={() => setShowForm(!showForm)}>
+          {showForm ? 'X' : 'Add New Post'}
+        </button>
+        {showForm && (
+          <form onSubmit={handleSubmit}>
+            <div>
+              <h3>Title</h3>
+              <input
+                type="text"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <h3>Content</h3>
+              <textarea
+                id="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <h3>User ID</h3>
+              <input
+                type="text"
+                id="appUserId"
+                value={appUserId}
+                onChange={(e) => setAppUserId(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit">Post</button>
+          </form>
+        )}
+      </div>
     </div>
   );
 };
