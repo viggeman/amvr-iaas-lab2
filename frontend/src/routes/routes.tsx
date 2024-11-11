@@ -24,6 +24,6 @@ export const routes: RouteObject[] = [
   },
   {
     path: '/posts',
-    element: <Posts posts={[]} />,
+    element: <Posts />,
   },
 ];

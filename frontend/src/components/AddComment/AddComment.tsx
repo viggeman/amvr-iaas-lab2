@@ -10,6 +10,7 @@ interface Props {
 const AddComment: FC<Props> = ({ postId, onCommentCreated }) => {
   const [content, setContent] = useState('');
   const [appUserId, setAppUserId] = useState('');
+  const [showForm, setShowForm] = useState(false); // Initially hide the form
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
@@ -38,6 +39,7 @@ const AddComment: FC<Props> = ({ postId, onCommentCreated }) => {
         onCommentCreated(createdComment);
         setContent('');
         setAppUserId('');
+        setShowForm(false); // Hide the form after commenting
       } else {
         const errorData = await response.json();
         console.error('Error creating comment:', errorData);
@@ -49,28 +51,33 @@ const AddComment: FC<Props> = ({ postId, onCommentCreated }) => {
 
   return (
     <div className={styles.container}>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="content">Content:</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="appUserId">App User ID:</label>
-          <input
-            type="text"
-            id="appUserId"
-            value={appUserId}
-            onChange={(e) => setAppUserId(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Create Comment</button>
-      </form>
+      <button type="button" onClick={() => setShowForm(!showForm)}>
+        {showForm ? 'X' : 'Add Comment'}
+      </button>
+      {showForm && (
+        <form onSubmit={handleSubmit} className={styles.commentContainer}>
+          <div>
+            <label htmlFor="content">Content:</label>
+            <textarea
+              id="content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="appUserId">App User ID:</label>
+            <input
+              type="text"
+              id="appUserId"
+              value={appUserId}
+              onChange={(e) => setAppUserId(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit">Create Comment</button>
+        </form>
+      )}
     </div>
   );
 };

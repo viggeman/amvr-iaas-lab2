@@ -1,0 +1,26 @@
+.container {
+  width: 65vw;
+  margin: 0 auto;
+  padding-top: var(--site-padding);
+}
+
+.postContainer {
+  padding: var(--dialog-padding);
+  background-color: var(--color-gray);
+  margin-bottom: var(--site-padding);
+  border-radius: 1rem;
+}
+
+.postContainer form {
+  margin-top: 1rem;
+}
+
+.postContainer input[type='text'],
+.postContainer textarea {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-gray-light);
+  border-radius: 0.5rem;
+  resize: none;
+}

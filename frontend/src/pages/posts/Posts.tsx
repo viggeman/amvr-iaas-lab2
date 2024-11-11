@@ -88,7 +88,6 @@ const Posts: FC = () => {
   return (
     <div className={styles.container}>
       <div>
-        <h2>Create post</h2>
         <CreatePost onPostCreated={handlePostCreated} />
       </div>
       {fetchedPosts.map((post) => (
