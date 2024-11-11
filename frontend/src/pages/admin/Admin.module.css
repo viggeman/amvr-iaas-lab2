@@ -72,3 +72,7 @@ nav {
   background-color: #00c5c8;
   color: black;
 }
+
+.hideInput {
+  display: none;
+}
