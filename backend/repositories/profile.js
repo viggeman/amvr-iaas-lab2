@@ -50,6 +50,7 @@ exports.editProfile = async (req, res) => {
       id,
     ];
     const result = await db.query(text, values);
+    console.log(result);
     return res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
