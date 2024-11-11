@@ -35,6 +35,7 @@
   height: fit-content;
   border: solid 2px #00c5c8;
   margin: 8px;
+  width: 50%;
 }
 
 .id {
@@ -46,8 +47,15 @@
   color: #00c5c8;
 }
 
-a:hover {
+.idNavigation:hover {
   background-color: #00c5c8;
+  color: black;
+  cursor: pointer;
+}
+
+.backButton:hover {
+  background-color: #00c5c8;
+  padding: 12px;
   color: black;
   cursor: pointer;
 }
@@ -75,4 +83,27 @@ nav {
 
 .hideInput {
   display: none;
+}
+
+.modifyInput {
+  border: solid 1px #00c5c8;
+  background-color: #06191d;
+  color: #00c5c8;
+  font-size: 14px;
+  margin-top: 12px;
+  outline: #00c5c8;
+}
+
+.modifyButton {
+  border: solid 1px #00c5c8;
+  padding: 8px;
+  background-color: #06191d;
+  color: #00c5c8;
+  margin-top: 12px;
+  font-weight: 900;
+}
+
+.modifyButton:hover {
+  background-color: #00c5c8;
+  color: black;
 }
