@@ -4,6 +4,7 @@ import AdminModify from '../pages/admin/AdminModify';
 import Home from '../pages/Home';
 import Posts from '../pages/posts/Posts';
 import UserProfile from '../pages/users/[id]/profile';
+import EditProfile from '../pages/users/[id]/editProfile';
 
 export const routes: RouteObject[] = [
   {
@@ -13,6 +14,10 @@ export const routes: RouteObject[] = [
   {
     path: '/users/:id/profile',
     element: <UserProfile />,
+  },
+  {
+    path: '/users/:id/editProfile',
+    element: <EditProfile />,
   },
   {
     path: '/auth/admin',

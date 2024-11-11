@@ -4,9 +4,11 @@ import styles from './profile.module.css';
 
 interface User {
   id?: number;
-  name: string;
+  first_name: string;
   last_name: string;
+  role: string;
   email_address: string;
+  dateOfBirth: string;
   created_at: string;
   modified_at: string;
 }
@@ -15,8 +17,10 @@ const UserProfile: FC = () => {
   const { id } = useParams();
   const [user, setUser] = useState<User>({
     id: undefined,
-    name: '',
+    first_name: '',
     last_name: '',
+    role: '',
+    dateOfBirth: '',
     email_address: '',
     created_at: '',
     modified_at: '',
@@ -41,14 +45,23 @@ const UserProfile: FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1>User Profile: {id}</h1>
+      <h1>User Profile: {user.first_name + ' ' + user.last_name}</h1>
       {user.id !== undefined ? (
         <div key={user.id}>
-          <div>Name: {user.name}</div>
+          <div>First Name: {user.first_name}</div>
           <div>Last Name: {user.last_name}</div>
+          <div>Role: {user.role}</div>
           <div>Email Address: {user.email_address}</div>
-          <div>Created At: {user.created_at}</div>
-          <div>Updated At: {user.modified_at}</div>
+          <div>
+            DOB: {new Date(user.date_of_birth).toISOString().split('T')[0]}
+          </div>
+
+          <div>
+            Created At: {new Date(user.created_at).toISOString().split('T')[0]}{' '}
+          </div>
+          <div>
+            Updated At: {new Date(user.modified_at).toISOString().split('T')[0]}{' '}
+          </div>
         </div>
       ) : (
         <div>No profile data found</div>
