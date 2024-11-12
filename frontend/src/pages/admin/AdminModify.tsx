@@ -28,7 +28,6 @@ const AdminModify = () => {
     if (checker !== true) {
       return null;
     }
-    console.log('Submitted:', data);
     const body = data;
     try {
       const response = await fetch(`/api/admin/modify-user/${userId}`, {
@@ -36,7 +35,6 @@ const AdminModify = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      console.log(JSON.stringify(body));
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -53,7 +51,6 @@ const AdminModify = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('Data:', data);
         setUser(data);
       } catch (error) {
         console.error(error);
