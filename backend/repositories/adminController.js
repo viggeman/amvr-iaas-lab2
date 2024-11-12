@@ -21,8 +21,15 @@ exports.getUser = async (req, res) => {
   try {
     const user = await db.query(
       `
-      SELECT * FROM app_user
-       WHERE app_user.id = $1
+      SELECT
+        app_user.id,
+        app_user.role,
+        app_user.first_name,
+        app_user.last_name,
+        app_user.email_address,
+        app_user.date_of_birth
+        FROM app_user
+        WHERE app_user.id = $1
       `,
       [id]
     );
