@@ -21,8 +21,15 @@ exports.getUser = async (req, res) => {
   try {
     const user = await db.query(
       `
-      SELECT * FROM app_user
-       WHERE app_user.id = $1
+      SELECT
+        app_user.id,
+        app_user.role,
+        app_user.first_name,
+        app_user.last_name,
+        app_user.email_address,
+        app_user.date_of_birth
+        FROM app_user
+        WHERE app_user.id = $1
       `,
       [id]
     );
@@ -51,40 +58,21 @@ exports.getUserAddress = async (req, res) => {
 };
 
 exports.modifyUser = async (req, res) => {
-  const {
-    role,
-    firstName,
-    lastName,
-    emailAddress,
-    password,
-    dateOfBirth,
-    address,
-    id,
-  } = req.body;
+  const { id } = req.params;
+  const { role, firstName, lastName, emailAddress, dateOfBirth } = req.body;
   try {
     const text = `
-      UPDATE app_user as au
+      UPDATE app_user
         SET
         role = $1,
         first_name = $2,
         last_name = $3,
         email_address = $4,
-        password = $5,
-        date_of_birth = $6,
-        address = $7
-      WHERE
-        au.id = $8
+        date_of_birth = $5
+          WHERE
+        app_user.id = $6
         `;
-    const values = [
-      role,
-      firstName,
-      lastName,
-      emailAddress,
-      password,
-      dateOfBirth,
-      address,
-      id,
-    ];
+    const values = [role, firstName, lastName, emailAddress, dateOfBirth, id];
     const result = await db.query(text, values);
     return res.status(200).json(result.rows);
   } catch (error) {
@@ -94,8 +82,7 @@ exports.modifyUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-  const { id } = req.body;
-  console.log(req.body);
+  const { id } = req.params;
   try {
     const result = await db.query(
       'DELETE from app_user WHERE app_user.id = $1',

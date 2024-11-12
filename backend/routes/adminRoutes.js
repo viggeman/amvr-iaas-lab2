@@ -11,8 +11,8 @@ const routes = express.Router();
 
 routes.get('/', getAllUsers);
 routes.get('/get-user/:id', getUser);
-routes.put('/modify-user', modifyUser);
+routes.put('/modify-user/:id', modifyUser);
 routes.get('/get-user-address/:id', getUserAddress);
-routes.delete('/delete-user', deleteUser);
+routes.delete('/delete-user/:id', deleteUser);
 
 module.exports = routes;

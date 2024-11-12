@@ -9,9 +9,10 @@ type Inputs = {
   firstName: string;
   lastName: string;
   emailAddress: string;
-  password: string;
   dateOfBirth: string;
-  addressId: string;
+};
+
+type DeleteInput = {
   id: string;
 };
 
@@ -31,19 +32,40 @@ const AdminModify = () => {
     if (checker !== true) {
       return null;
     }
-    console.log('Submitted:', data);
     const body = data;
     try {
-      const response = await fetch(`/api/admin/modify-user`, {
+      const response = await fetch(`/api/admin/modify-user/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      console.log(JSON.stringify(body));
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      // const data = await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const {
+    register: registerDelete,
+    handleSubmit: handleDeleteSubmit,
+    // watch,
+    // formState: { errors },
+  } = useForm<DeleteInput>();
+
+  const onSubmitDelete: SubmitHandler<DeleteInput> = async () => {
+    const checker = confirm(`Are you sure you want to delete user: ${userId}?`);
+    if (checker !== true) {
+      return null;
+    }
+    try {
+      const response = await fetch(`/api/admin/delete-user/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
     } catch (error) {
       console.error(error);
     }
@@ -57,7 +79,6 @@ const AdminModify = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('Data:', data);
         setUser(data);
       } catch (error) {
         console.error(error);
@@ -89,6 +110,11 @@ const AdminModify = () => {
         </h2>
       );
     }
+  };
+  const formatDate = (timestamp: string) => {
+    const date = new Date(timestamp);
+
+    return date.toLocaleString().slice(0, -10);
   };
   checkAddress();
   return (
@@ -135,39 +161,11 @@ const AdminModify = () => {
                 />
               </p>
               <p>
-                <strong>Password: </strong>
-                <input
-                  className={styles.modifyInput}
-                  defaultValue={user.password}
-                  {...register('password')}
-                />
-              </p>
-              <p>
                 <strong>Date of birth: </strong>
                 <input
                   className={styles.modifyInput}
-                  defaultValue={user.date_of_birth}
+                  defaultValue={formatDate(user.date_of_birth)}
                   {...register('dateOfBirth')}
-                />
-              </p>
-              <p>
-                <strong>AddressId: </strong>
-                {user.address ? (
-                  <input
-                    className={styles.modifyInput}
-                    defaultValue={user.address}
-                    {...register('addressId')}
-                  />
-                ) : (
-                  'N/A'
-                )}
-              </p>
-              <p>
-                <strong>Id: </strong>
-                <input
-                  className={styles.modifyInput}
-                  defaultValue={user.id}
-                  {...register('id')}
                 />
               </p>
               <input
@@ -175,6 +173,16 @@ const AdminModify = () => {
                 type="submit"
                 value={'Add changes'}
               />
+            </form>
+            <form onSubmit={handleDeleteSubmit(onSubmitDelete)} method="DELETE">
+              <button type="submit" className={styles.deleteButton}>
+                <input
+                  {...registerDelete('id')}
+                  defaultValue={user.id}
+                  className={styles.hideInput}
+                />
+                Delete user
+              </button>
             </form>
           </div>
         ))}
