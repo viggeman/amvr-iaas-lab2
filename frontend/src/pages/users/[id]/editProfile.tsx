@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from './profile.module.css';
 import { User } from '../../../types/user';
-import { Box, Card, Flex, Text, Button, Input } from '@radix-ui/themes';
+import { Box, Card, Flex, Text, Button, Dialog } from '@radix-ui/themes';
 
 type Inputs = {
   role: string;
@@ -19,20 +19,22 @@ type Inputs = {
 const EditProfile: FC = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User | null>(null);
+  const [showDialog, setShowDialog] = useState(false);
 
   const { register, handleSubmit, setValue } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      // Ensure `id` is valid before submission
       if (!id) {
         console.error('User ID is missing');
         return;
       }
-
-      // Attach the `id` from `useParams` if it isn't already in `data`
       data.id = id;
 
+      // Add one day to dateOfBirth
+      const dateOfBirth = new Date(data.dateOfBirth);
+      dateOfBirth.setDate(dateOfBirth.getDate() + 1);
+      data.dateOfBirth = dateOfBirth.toISOString().split('T')[0];
       const response = await fetch('/api/profile/edit-profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -42,6 +44,9 @@ const EditProfile: FC = () => {
         throw new Error('Network response was not ok');
       }
       console.log('User data updated:', data);
+
+      // Show dialog after successful submission
+      setShowDialog(true);
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -64,7 +69,10 @@ const EditProfile: FC = () => {
           setValue('role', data[0].role);
           setValue('emailAddress', data[0].email_address);
           setValue('password', data[0].password);
-          setValue('dateOfBirth', data[0].date_of_birth);
+          setValue(
+            'dateOfBirth',
+            new Date(data[0].date_of_birth).toISOString().split('T')[0]
+          );
           setValue('address', data[0].address);
         }
       } catch (error) {
@@ -110,7 +118,9 @@ const EditProfile: FC = () => {
               <div className={styles.form}>
                 <Text>Date of Birth: </Text>
                 <input
-                  defaultValue={user.date_of_birth}
+                  defaultValue={
+                    new Date(user.date_of_birth).toISOString().split('T')[0]
+                  }
                   {...register('dateOfBirth')}
                 />
               </div>
@@ -134,9 +144,48 @@ const EditProfile: FC = () => {
           <p>No profile data found</p>
         )}
       </Card>
+      <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>
+        <Dialog.Content maxWidth='450px'>
+          <Dialog.Title>GDPR</Dialog.Title>
+          <Dialog.Description size='2' mb='4'>
+            We need to store and process personal information about you, such as
+            your first name, last name, email address, date of birth, and
+            address. The purpose of this processing is to connect you with other
+            users and/or to enable support to contact you. We obtained your
+            information solely from data inputted by you. We always apply
+            current privacy legislation to all processing of personal data. The
+            legal basis for processing your personal data is the legitimate
+            interest in providing and improving our services. Your information
+            will be stored for as long as you have an active account with us or
+            as required by applicable laws and regulations. The personal
+            information we process about you is shared only with other users on
+            the platform. We will not share your information with any third
+            parties unless legally required to do so. Furthermore, we will never
+            transfer your data to a country outside the EU. The data controller
+            is [Your Company Name]. You have the right to contact us if you
+            would like to access information we have about you, request
+            corrections, request data transfer, restrict processing, object to
+            processing, or request the deletion of your data. The easiest way to
+            do this is by contacting us at support@yourcompany.com. You can
+            reach our Data Protection Officer at dpo@yourcompany.com. If you
+            have any complaints about how we process your personal data, you
+            have the right to lodge a complaint with the supervisory authority,
+            the Swedish Authority for Privacy Protection (IMY).
+          </Dialog.Description>
+          <Flex gap='3' mt='4' justify='end'>
+            <Dialog.Close>
+              <Button variant='soft' color='gray'>
+                Cancel
+              </Button>
+            </Dialog.Close>
+            <Dialog.Close>
+              <Button type='submit'>Agree</Button>
+            </Dialog.Close>
+          </Flex>
+        </Dialog.Content>
+      </Dialog.Root>
     </Box>
   );
 };
 
 export default EditProfile;
-// Ryan
