@@ -1,37 +1,33 @@
-const db = require('../utils');  // Database utility (for querying)
 const bcrypt = require('bcrypt');
+const db = require('../utils');  // Database utility for querying
 
-// Create new user in the database
-exports.createUser = async (req, res) => {
-    const { email, password } = req.body;
+// Create a new user with email and password
+exports.createNewUser = async (req, res) => {
+    const { email_address, password } = req.body;
 
-    console.log("Received data:", email, password);
+    // Simple validation to ensure required fields are provided
+    if (!email_address || !password) {
+        return res.status(400).send('Missing email or password');
+    }
 
     try {
-        // Check if the user already exists in the database
-        const userResult = await db.query('SELECT * FROM app_user WHERE email_address = $1', [email]);
-        console.log('User query result:', userResult);  // Log the query result
+        // Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds set to 10
 
-        if (userResult.rows.length > 0) {
-            // If user already exists, return 400 error
-            return res.status(400).json({ message: 'User with this email already exists' });
-        }
+        // Insert the new user into the app_user table with the hashed password
+        const result = await db.query(`
+            INSERT INTO app_user (email_address, password, created_at, modified_at)
+            VALUES ($1, $2, NOW(), NOW()) RETURNING id, email_address, created_at, modified_at;
+        `, [email_address, hashedPassword]);
 
-        // Hash the password before saving it to the database
-        const hashedPassword = await bcrypt.hash(password, 10);
-        console.log('Hashed password:', hashedPassword);  // Log the hashed password
-
-        // Insert the new user into the database
-        await db.query(
-            'INSERT INTO app_user (email_address, password) VALUES ($1, $2)',
-            [email, hashedPassword]
-        );
-
-        // Return success message
-        return res.status(201).json({ message: 'User created successfully' });
+        // Return the newly created user (excluding the password)
+        return res.status(201).json({
+            message: 'User successfully created',
+            user: result.rows[0]
+        });
 
     } catch (error) {
-        console.error('Error creating user:', error);  // Log error details
-        return res.status(500).json({ message: 'Error creating user', error: error.message });
+        console.error(error);
+        return res.status(500).send('Error creating new user');
     }
 };

@@ -7,49 +7,49 @@ CREATE TABLE audit_log (
 );
 
 CREATE TABLE address (
-	id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-	country VARCHAR(50) NOT NULL,
-	city VARCHAR(50) NOT NULL,
-	street VARCHAR(100) NOT NULL,
-	street_number INT NOT NULL,
-	postal_code INT NOT NULL,
-	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-	modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  country VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  street VARCHAR(100) NOT NULL,
+  street_number INT NOT NULL,
+  postal_code INT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE app_user (
-	id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-	role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin')),
-	first_name VARCHAR(50) NOT NULL,
-	last_name VARCHAR(50) NOT NULL,
-	email_address VARCHAR(100) UNIQUE NOT NULL,
-	password VARCHAR(100) NOT NULL,
-	date_of_birth DATE NOT NULL,
-	address uuid,
-	FOREIGN KEY(address) REFERENCES address(id) ON DELETE CASCADE,
-	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-	modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin')),
+  first_name VARCHAR(50),
+  last_name VARCHAR(50),
+  email_address VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  date_of_birth DATE,
+  address uuid,
+  FOREIGN KEY(address) REFERENCES address(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE post (
-	id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-	title VARCHAR(100) NOT NULL,
-	content TEXT NOT NULL,
-	app_user_id uuid,
-	FOREIGN KEY(app_user_id) REFERENCES app_user(id) ON DELETE CASCADE,
-	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-	modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  content TEXT NOT NULL,
+  app_user_id uuid,
+  FOREIGN KEY(app_user_id) REFERENCES app_user(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE comment (
-	id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-	content TEXT NOT NULL,
-	app_user_id uuid,
-	post_id uuid,
-	FOREIGN KEY(app_user_id) REFERENCES app_user(id) ON DELETE CASCADE,
-	FOREIGN KEY(post_id) REFERENCES post(id) ON DELETE CASCADE,
-	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-	modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  content TEXT NOT NULL,
+  app_user_id uuid,
+  post_id uuid,
+  FOREIGN KEY(app_user_id) REFERENCES app_user(id) ON DELETE CASCADE,
+  FOREIGN KEY(post_id) REFERENCES post(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create function to update modified_at timestamp
