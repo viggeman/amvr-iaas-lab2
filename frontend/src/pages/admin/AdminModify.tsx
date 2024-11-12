@@ -31,7 +31,7 @@ const AdminModify = () => {
     console.log('Submitted:', data);
     const body = data;
     try {
-      const response = await fetch(`/api/admin/modify-user`, {
+      const response = await fetch(`/api/admin/modify-user/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
