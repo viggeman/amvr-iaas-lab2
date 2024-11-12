@@ -5,6 +5,7 @@ import Home from '../pages/Home';
 import Posts from '../pages/posts/Posts';
 import UserProfile from '../pages/users/[id]/profile';
 import EditProfile from '../pages/users/[id]/editProfile';
+import RegisterUser from '../pages/register/RegisterUser';
 
 export const routes: RouteObject[] = [
   {
@@ -30,5 +31,9 @@ export const routes: RouteObject[] = [
   {
     path: '/posts',
     element: <Posts />,
+  },
+  {
+    path: '/register',
+    element: <RegisterUser />,
   },
 ];

@@ -8,6 +8,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const postRoutes = require('./routes/postRoutes');
 const profileRoutes = require('./routes/profile');
 const authRoutes = require('./routes/authRoutes');
+const newUserRoutes = require('./routes/newUserRoutes')
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // Define specific routes first
 // app.use('/api', testRoutes);
+app.use('/api/register', newUserRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/profile', profileRoutes);
