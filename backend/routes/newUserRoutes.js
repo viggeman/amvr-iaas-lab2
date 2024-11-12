@@ -1,9 +1,9 @@
 const express = require('express');
-const { createUser } = require('../repositories/registerController');
+const { createNewUser } = require('../repositories/registerController');
 
 const routes = express.Router();
 
-// Define the POST route for registration
-routes.post('/register', createUser);
+// Define the POST route for creating a new user
+routes.post('/', createNewUser);
 
 module.exports = routes;
