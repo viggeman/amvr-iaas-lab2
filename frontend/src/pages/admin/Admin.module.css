@@ -39,8 +39,9 @@
 }
 
 .id {
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 8px;
+  border-bottom: solid 1px #00c5c8;
 }
 
 .idNavigation {

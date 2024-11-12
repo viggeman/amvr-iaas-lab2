@@ -12,6 +12,10 @@ type Inputs = {
   dateOfBirth: string;
 };
 
+type DeleteInput = {
+  id: string;
+};
+
 const AdminModify = () => {
   const [user, setUser] = useState<null | User[]>(null);
   const [userAddress, setUserAddress] = useState<null | Address[]>(null);
@@ -34,6 +38,30 @@ const AdminModify = () => {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const {
+    register: registerDelete,
+    handleSubmit: handleDeleteSubmit,
+    // watch,
+    // formState: { errors },
+  } = useForm<DeleteInput>();
+
+  const onSubmitDelete: SubmitHandler<DeleteInput> = async () => {
+    const checker = confirm(`Are you sure you want to delete user: ${userId}?`);
+    if (checker !== true) {
+      return null;
+    }
+    try {
+      const response = await fetch(`/api/admin/delete-user/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
       });
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -145,6 +173,16 @@ const AdminModify = () => {
                 type="submit"
                 value={'Add changes'}
               />
+            </form>
+            <form onSubmit={handleDeleteSubmit(onSubmitDelete)} method="DELETE">
+              <button type="submit" className={styles.deleteButton}>
+                <input
+                  {...registerDelete('id')}
+                  defaultValue={user.id}
+                  className={styles.hideInput}
+                />
+                Delete user
+              </button>
             </form>
           </div>
         ))}
