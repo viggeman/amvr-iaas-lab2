@@ -35,7 +35,9 @@ const Admin = () => {
     // formState: { errors },
   } = useForm<Input>();
   const onSubmit: SubmitHandler<Input> = async (data) => {
-    const checker = confirm('Are you sure you want to delete this user?');
+    const checker = confirm(
+      `Are you sure you want to delete user: ${data.id}?`
+    );
     if (checker !== true) {
       return null;
     }
