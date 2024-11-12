@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './profile.module.css';
+import { Box, Card, Flex, Text, Button } from '@radix-ui/themes';
 
 interface User {
   id?: number;
@@ -44,29 +45,34 @@ const UserProfile: FC = () => {
   }, [id]);
 
   return (
-    <div className={styles.container}>
-      <h1>User Profile: {user.first_name + ' ' + user.last_name}</h1>
-      {user.id !== undefined ? (
-        <div key={user.id}>
-          <div>First Name: {user.first_name}</div>
-          <div>Last Name: {user.last_name}</div>
-          <div>Role: {user.role}</div>
-          <div>Email Address: {user.email_address}</div>
-          <div>
-            DOB: {new Date(user.date_of_birth).toISOString().split('T')[0]}
-          </div>
+    <Box maxWidth='500px' className={styles.container}>
+      <Card variant='clasic'>
+        <h1>User Profile: {user.first_name + ' ' + user.last_name}</h1>
+        {user.id !== undefined ? (
+          <Flex direction='column' gap='2' key={user.id}>
+            <Text>First Name: {user.first_name}</Text>
+            <Text>Last Name: {user.last_name}</Text>
+            <Text>Role: {user.role}</Text>
+            <Text>Email Address: {user.email_address}</Text>
+            <Text>
+              DOB: {new Date(user.date_of_birth).toISOString().split('T')[0]}
+            </Text>
 
-          <div>
-            Created At: {new Date(user.created_at).toISOString().split('T')[0]}{' '}
-          </div>
-          <div>
-            Updated At: {new Date(user.modified_at).toISOString().split('T')[0]}{' '}
-          </div>
-        </div>
-      ) : (
-        <div>No profile data found</div>
-      )}
-    </div>
+            <Text>
+              Created At:{' '}
+              {new Date(user.created_at).toISOString().split('T')[0]}{' '}
+            </Text>
+            <Text>
+              Updated At:{' '}
+              {new Date(user.modified_at).toISOString().split('T')[0]}{' '}
+            </Text>
+            <Button>Edit</Button>
+          </Flex>
+        ) : (
+          <div>No profile data found</div>
+        )}
+      </Card>
+    </Box>
   );
 };
 

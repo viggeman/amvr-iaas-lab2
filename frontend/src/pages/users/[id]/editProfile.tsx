@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from './profile.module.css';
 import { User } from '../../../types/user';
+import { Box, Card, Flex, Text, Button, Input } from '@radix-ui/themes';
 
 type Inputs = {
   role: string;
@@ -75,55 +76,65 @@ const EditProfile: FC = () => {
   }, [id, setValue]);
 
   return (
-    <div className={styles.container}>
-      <h1>Edit Profile</h1>
-      {user ? (
-        <form onSubmit={handleSubmit(onSubmit)} method='PUT'>
-          <div className={styles.form}>
-            <label>First Name: </label>
-            <input defaultValue={user.first_name} {...register('firstName')} />
-          </div>
-          <div className={styles.form}>
-            <label>Last Name: </label>
-            <input defaultValue={user.last_name} {...register('lastName')} />
-          </div>
-          <div className={styles.form}>
-            <label>Role: </label>
-            <input defaultValue={user.role} {...register('role')} />
-          </div>
-          <div className={styles.form}>
-            <label>Email Address: </label>
-            <input
-              defaultValue={user.email_address}
-              {...register('emailAddress')}
-            />
-          </div>
-          <div className={styles.form}>
-            <label>Date of Birth: </label>
-            <input
-              defaultValue={user.date_of_birth}
-              {...register('dateOfBirth')}
-            />
-          </div>
-          <div className={styles.form}>
-            <label>Address: </label>
-            <input defaultValue={user.address} {...register('address')} />
-          </div>
-          <div className={styles.form}>
-            <label>Password: </label>
-            <input
-              type='password'
-              placeholder='Enter new password if updating'
-              {...register('password')}
-            />
-          </div>
+    <Box maxWidth='500px' className={styles.container}>
+      <Card variant='clasic'>
+        <h1>Edit Profile</h1>
+        {user ? (
+          <form onSubmit={handleSubmit(onSubmit)} method='PUT'>
+            <Flex direction='column' gap='3' key={user.id}>
+              <div className={styles.form}>
+                <Text>First Name: </Text>
+                <input
+                  defaultValue={user.first_name}
+                  {...register('firstName')}
+                />
+              </div>
+              <div className={styles.form}>
+                <Text>Last Name: </Text>
+                <input
+                  defaultValue={user.last_name}
+                  {...register('lastName')}
+                />
+              </div>
+              <div className={styles.form}>
+                <Text>Role: </Text>
+                <input defaultValue={user.role} {...register('role')} />
+              </div>
+              <div className={styles.form}>
+                <Text>Email Address: </Text>
+                <input
+                  defaultValue={user.email_address}
+                  {...register('emailAddress')}
+                />
+              </div>
+              <div className={styles.form}>
+                <Text>Date of Birth: </Text>
+                <input
+                  defaultValue={user.date_of_birth}
+                  {...register('dateOfBirth')}
+                />
+              </div>
+              <div className={styles.form}>
+                <Text>Address: </Text>
+                <input defaultValue={user.address} {...register('address')} />
+              </div>
+              <div className={styles.form}>
+                <Text>Password: </Text>
+                <input
+                  type='password'
+                  placeholder='Enter new password if updating'
+                  {...register('password')}
+                />
+              </div>
 
-          <input type='submit' value='Save Changes' />
-        </form>
-      ) : (
-        <p>No profile data found</p>
-      )}
-    </div>
+              <Button>Save Changes</Button>
+            </Flex>
+          </form>
+        ) : (
+          <p>No profile data found</p>
+        )}
+      </Card>
+    </Box>
   );
 };
 
