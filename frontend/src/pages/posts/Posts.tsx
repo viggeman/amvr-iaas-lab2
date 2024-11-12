@@ -73,7 +73,7 @@ const Posts: FC = () => {
         (post) => post.id === newComment.post_id
       );
       if (postIndex === -1) {
-        return prevPosts; // Post not found, do nothing
+        return prevPosts;
       }
 
       const updatedPosts = [...prevPosts];
