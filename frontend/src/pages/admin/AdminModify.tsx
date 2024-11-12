@@ -9,10 +9,7 @@ type Inputs = {
   firstName: string;
   lastName: string;
   emailAddress: string;
-  password: string;
   dateOfBirth: string;
-  addressId: string;
-  id: string;
 };
 
 const AdminModify = () => {
@@ -135,39 +132,11 @@ const AdminModify = () => {
                 />
               </p>
               <p>
-                <strong>Password: </strong>
-                <input
-                  className={styles.modifyInput}
-                  defaultValue={user.password}
-                  {...register('password')}
-                />
-              </p>
-              <p>
                 <strong>Date of birth: </strong>
                 <input
                   className={styles.modifyInput}
                   defaultValue={user.date_of_birth}
                   {...register('dateOfBirth')}
-                />
-              </p>
-              <p>
-                <strong>AddressId: </strong>
-                {user.address ? (
-                  <input
-                    className={styles.modifyInput}
-                    defaultValue={user.address}
-                    {...register('addressId')}
-                  />
-                ) : (
-                  'N/A'
-                )}
-              </p>
-              <p>
-                <strong>Id: </strong>
-                <input
-                  className={styles.modifyInput}
-                  defaultValue={user.id}
-                  {...register('id')}
                 />
               </p>
               <input
