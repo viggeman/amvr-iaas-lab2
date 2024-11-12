@@ -19,7 +19,6 @@ const Posts: FC = () => {
         { label: 'day', seconds: 86400 },
         { label: 'h', seconds: 3600 },
         { label: 'm', seconds: 60 },
-        { label: 's', seconds: 1 },
       ];
 
       for (const interval of intervals) {
@@ -33,7 +32,7 @@ const Posts: FC = () => {
     };
   }, []);
 
-  const fetchPosts = async () => {
+  const fetchPostsAndComments = async () => {
     try {
       const response = await fetch('/api/posts/posts-w-comments');
       const data = await response.json();
@@ -57,7 +56,7 @@ const Posts: FC = () => {
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchPostsAndComments();
   }, []);
 
   const handlePostCreated = async (newPost: string) => {
@@ -67,22 +66,25 @@ const Posts: FC = () => {
     setFetchedPosts([nextPost, ...fetchedPosts]);
   };
 
-  const handleCommentCreated = (newComment: Comment) => {
-    setFetchedPosts((prevPosts) => {
-      const postIndex = prevPosts.findIndex(
-        (post) => post.id === newComment.post_id
-      );
-      if (postIndex === -1) {
-        return prevPosts;
-      }
+  const handleCommentCreated = async (newComment: Comment) => {
+    try {
+      setFetchedPosts((prevPosts) => {
+        const postIndex = prevPosts.findIndex(
+          (post) => post.id === newComment.post_id
+        );
+        if (postIndex === -1) {
+          return prevPosts;
+        }
 
-      const updatedPosts = [...prevPosts];
-      updatedPosts[postIndex] = {
-        ...updatedPosts[postIndex],
-        comments: [...updatedPosts[postIndex].comments, newComment],
-      };
-      return updatedPosts;
-    });
+        const updatedPosts = [...prevPosts];
+        const postToUpdate = { ...updatedPosts[postIndex] };
+        postToUpdate.comments = [...postToUpdate.comments, newComment];
+        updatedPosts[postIndex] = postToUpdate;
+        return updatedPosts;
+      });
+    } catch (error) {
+      console.error('Error updating post:', error);
+    }
   };
 
   return (
@@ -94,9 +96,7 @@ const Posts: FC = () => {
         <div key={post.id} className={styles.postContainer}>
           <div className={styles.post}>
             <div className={styles.postContent}>
-              <div className={styles.author}>
-                <span>{post.username}</span>
-              </div>
+              <span>{post.username}</span>
               <h2 className={styles.postTitle}>{post.title}</h2>
               <p className={styles.postText}>{post.content}</p>
             </div>
@@ -107,9 +107,7 @@ const Posts: FC = () => {
           {post.comments.map((comment) => (
             <div key={comment.id} className={styles.commentContainer}>
               <div className={styles.comment}>
-                <div className={styles.commentBy}>
-                  <span>{comment.username}</span>
-                </div>
+                <span>{comment.username}</span>
                 <p className={styles.commentText}>{comment.content}</p>
               </div>
               <div className={styles.timeCreated}>

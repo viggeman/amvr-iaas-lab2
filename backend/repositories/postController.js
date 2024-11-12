@@ -12,18 +12,17 @@ exports.getAllPosts = async (req, res) => {
 
 exports.getAllPostsWithComments = async (req, res) => {
   try {
-    // Fetch all posts
     const postsResult = await db.query(`
       SELECT
         p.*,
         au.first_name || ' ' || au.last_name AS username
       FROM post p
       JOIN app_user au ON p.app_user_id = au.id
+      ORDER BY p.created_at DESC
     `);
 
     const posts = postsResult.rows;
 
-    // Fetch comments for all posts
     const commentsResult = await db.query(`
       SELECT
         c.id,
@@ -38,7 +37,6 @@ exports.getAllPostsWithComments = async (req, res) => {
 
     const comments = commentsResult.rows;
 
-    // Group comments by post_id
     const commentsByPostId = {};
     comments.forEach((comment) => {
       if (!commentsByPostId[comment.post_id]) {
@@ -47,14 +45,10 @@ exports.getAllPostsWithComments = async (req, res) => {
       commentsByPostId[comment.post_id].push(comment);
     });
 
-    // Combine posts and comments
     const response = posts.map((post) => ({
       ...post,
       comments: commentsByPostId[post.id] || [],
     }));
-
-    // Sort posts by date descending
-    response.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     res.status(200).json(response);
   } catch (error) {
@@ -67,7 +61,6 @@ exports.getPostById = async (req, res) => {
   const { postId } = req.params;
 
   try {
-    // Fetch the post data
     const postResult = await db.query(
       `
       SELECT
@@ -85,7 +78,6 @@ exports.getPostById = async (req, res) => {
       return res.status(404).json({ error: 'Post not found' });
     }
 
-    // Fetch the comments for the post
     const commentsResult = await db.query(
       `
       SELECT
@@ -94,17 +86,18 @@ exports.getPostById = async (req, res) => {
       FROM comment c
       JOIN app_user au ON c.app_user_id = au.id
       WHERE c.post_id = $1
+      ORDER BY c.created_at ASC
     `,
       [postId]
     );
 
     const comments = commentsResult.rows;
 
-    // Combine the post and comments
     const response = {
       ...post,
       comments,
     };
+
     res.status(200).json(response);
   } catch (error) {
     console.error(error);
@@ -125,55 +118,68 @@ exports.getPostsByUser = async (req, res) => {
         au.last_name
       FROM post p
       JOIN app_user au ON p.app_user_id = au.id
-      WHERE p.app_user_id = $1
-    `,
+      WHERE au.id = $1
+      `,
       [userId]
     );
 
     const posts = postsResult.rows;
 
-    // Fetch comments for the posts
-    const postIds = posts.map((post) => post.id);
-    console.log('postIds', postIds);
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch posts by user' });
+  }
+};
+
+exports.getPostWithComments = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    // Fetch the post
+    const postResult = await db.query(
+      `
+      SELECT
+        p.*,
+        au.first_name || ' ' || au.last_name AS username
+      FROM post p
+      JOIN app_user au ON p.app_user_id = au.id
+      WHERE p.id = $1
+      `,
+      [postId]
+    );
+
+    if (postResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    const post = postResult.rows[0];
+
+    // Fetch comments for the post
     const commentsResult = await db.query(
       `
       SELECT
-        c.id,
-        c.content,
-        c.created_at,
-        c.modified_at,
-        au.id,
-        au.first_name,
-        au.last_name,
-        c.post_id
+        c.*,
+        au.first_name || ' ' || au.last_name AS username
       FROM comment c
       JOIN app_user au ON c.app_user_id = au.id
-      WHERE c.post_id = ANY($1)
-    `,
-      [postIds]
+      WHERE c.post_id = $1
+      ORDER BY c.created_at ASC
+      `,
+      [postId]
     );
 
     const comments = commentsResult.rows;
 
-    // Group comments by post_id
-    const commentsByPostId = {};
-    comments.forEach((comment) => {
-      if (!commentsByPostId[comment.post_id]) {
-        commentsByPostId[comment.post_id] = [];
-      }
-      commentsByPostId[comment.post_id].push(comment);
-    });
-
-    // Combine posts and comments
-    const response = posts.map((post) => ({
+    const response = {
       ...post,
-      comments: commentsByPostId[post.id] || [],
-    }));
+      comments,
+    };
 
     res.status(200).json(response);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to fetch posts and comments' });
+    res.status(500).json({ error: 'Failed to fetch post and comments' });
   }
 };
 
@@ -283,7 +289,8 @@ exports.createComment = async (req, res) => {
       `
       INSERT INTO comment (content, app_user_id, post_id)
       VALUES ($1, $2, $3)
-      RETURNING *;
+      RETURNING *,
+        (SELECT first_name || ' ' || last_name FROM app_user WHERE id = $2) AS username;
     `,
       [content, app_user_id, post_id]
     );
