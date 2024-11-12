@@ -40,7 +40,6 @@ const AdminModify = () => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      // const data = await response.json();
     } catch (error) {
       console.error(error);
     }
@@ -86,6 +85,11 @@ const AdminModify = () => {
         </h2>
       );
     }
+  };
+  const formatDate = (timestamp: string) => {
+    const date = new Date(timestamp);
+
+    return date.toLocaleString().slice(0, -10);
   };
   checkAddress();
   return (
@@ -135,7 +139,7 @@ const AdminModify = () => {
                 <strong>Date of birth: </strong>
                 <input
                   className={styles.modifyInput}
-                  defaultValue={user.date_of_birth}
+                  defaultValue={formatDate(user.date_of_birth)}
                   {...register('dateOfBirth')}
                 />
               </p>
