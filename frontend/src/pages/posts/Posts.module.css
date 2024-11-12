@@ -20,36 +20,37 @@
   border-radius: 1rem;
 }
 
-.postTitle {
-}
-
 .postText {
   font-size: 1.4rem;
 }
 
-.author span {
+.postContent span {
   font-size: 1.1rem;
   font-weight: 600;
+  display: block;
 }
 
 .commentContainer {
   padding: 0 1rem 1rem 1rem;
   max-width: fit-content;
+  min-width: 20%;
 }
 
 .comment {
-  padding: 1rem;
+  padding: 1.2rem;
   background-color: var(--color-white);
   border-radius: 1rem;
 }
 
-.commentBy span {
+.comment span {
   font-size: 1.1rem;
   font-weight: 600;
+  display: block;
 }
 
 .commentText {
   font-size: 1.4rem;
+  letter-spacing: 0.1rem;
 }
 
 .timeCreated {
