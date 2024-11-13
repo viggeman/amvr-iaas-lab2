@@ -134,8 +134,10 @@ exports.getUsers = async (req, res) => {
     nextCursorCreatedAt = users[users.length - 1].created_at;
   }
 
-  res.json({
-    users,
-    nextCursor: { createdAt: nextCursorCreatedAt },
-  });
+  res.json([
+    {
+      users,
+      nextCursor: { createdAt: nextCursorCreatedAt },
+    },
+  ]);
 };

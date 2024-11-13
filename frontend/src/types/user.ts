@@ -1,12 +1,17 @@
-export interface User {
+interface User {
   id: string;
   role: string;
   first_name: string;
   last_name: string;
   email_address: string;
-  password: string;
   date_of_birth: string;
   address: string;
+  created_at: string;
+}
+
+export interface Data {
+  users: [User];
+  nextCursor: { createdAt: string };
 }
 
 export interface Address {
