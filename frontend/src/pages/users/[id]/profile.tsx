@@ -47,7 +47,7 @@ const UserProfile: FC = () => {
   return (
     <Box maxWidth='500px' className={styles.container}>
       <Card variant='clasic'>
-        <h1>User Profile: {user.first_name + ' ' + user.last_name}</h1>
+        <h1>{user.first_name + ' ' + user.last_name}</h1>
         {user.id !== undefined ? (
           <Flex direction='column' gap='2' key={user.id}>
             <Text>First Name: {user.first_name}</Text>
@@ -66,7 +66,7 @@ const UserProfile: FC = () => {
               Updated At:{' '}
               {new Date(user.modified_at).toISOString().split('T')[0]}{' '}
             </Text>
-            <Button>Edit</Button>
+            {/* <Button>Edit</Button> */}
           </Flex>
         ) : (
           <div>No profile data found</div>

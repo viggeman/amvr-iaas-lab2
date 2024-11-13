@@ -13,13 +13,13 @@ const Layout: FC<LayoutProps> = ({ children }) => {
         <nav className={styles.navBar}>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to='/'>Home</Link>
             </li>
             <li>
-              <Link to="/posts">Posts</Link>
+              <Link to='/posts'>Posts</Link>
             </li>
             <li>
-              <Link to="/auth/admin">Admin</Link>
+              <Link to='/auth/admin'>Admin</Link>
             </li>
           </ul>
         </nav>

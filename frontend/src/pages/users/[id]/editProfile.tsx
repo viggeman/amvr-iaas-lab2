@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Importing useNavigate here
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from './profile.module.css';
 import { User } from '../../../types/user';
@@ -14,41 +14,60 @@ type Inputs = {
   dateOfBirth: string;
   address?: string;
   id: string;
+  gdpr: boolean;
 };
 
 const EditProfile: FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate(); // Initialize navigate here
   const [user, setUser] = useState<User | null>(null);
   const [showDialog, setShowDialog] = useState(false);
 
   const { register, handleSubmit, setValue } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    if (!user?.gdpr) {
+      console.error('GDPR agreement is required to save data.');
+      setShowDialog(true);
+      return;
+    }
+
     try {
       if (!id) {
         console.error('User ID is missing');
         return;
       }
       data.id = id;
+      data.gdpr = true;
 
       // Add one day to dateOfBirth
       const dateOfBirth = new Date(data.dateOfBirth);
       dateOfBirth.setDate(dateOfBirth.getDate() + 1);
       data.dateOfBirth = dateOfBirth.toISOString().split('T')[0];
+
       const response = await fetch('/api/profile/edit-profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      console.log('User data updated:', data);
 
-      // Show dialog after successful submission
-      setShowDialog(true);
+      // Save was successful, redirect to profile page
+      console.log('User data updated:', data);
+      navigate(`/users/${id}/profile`); // Redirect to the profile page
     } catch (error) {
       console.error('Error updating profile:', error);
+    }
+  };
+
+  const handleAgree = async () => {
+    if (user) {
+      // Update GDPR consent in state
+      setUser((prev) => (prev ? { ...prev, gdpr: true } : null));
+      setShowDialog(false);
     }
   };
 
@@ -74,6 +93,12 @@ const EditProfile: FC = () => {
             new Date(data[0].date_of_birth).toISOString().split('T')[0]
           );
           setValue('address', data[0].address);
+          setValue('gdpr', data[0].gdpr);
+        }
+
+        // Show dialog if GDPR has not been agreed to
+        if (data[0] && !data[0].gdpr) {
+          setShowDialog(true);
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -85,8 +110,8 @@ const EditProfile: FC = () => {
 
   return (
     <Box maxWidth='500px' className={styles.container}>
-      <Card variant='clasic'>
-        <h1>Edit Profile</h1>
+      <Card variant='classic'>
+        <h1>Profile</h1>
         {user ? (
           <form onSubmit={handleSubmit(onSubmit)} method='PUT'>
             <Flex direction='column' gap='3' key={user.id}>
@@ -136,6 +161,7 @@ const EditProfile: FC = () => {
                   {...register('password')}
                 />
               </div>
+              {user.gdpr && <Text>GDPR Signed</Text>}
 
               <Button>Save Changes</Button>
             </Flex>
@@ -178,8 +204,8 @@ const EditProfile: FC = () => {
                 Cancel
               </Button>
             </Dialog.Close>
-            <Dialog.Close>
-              <Button type='submit'>Agree</Button>
+            <Dialog.Close onClick={handleAgree}>
+              <Button type='button'>Agree</Button>
             </Dialog.Close>
           </Flex>
         </Dialog.Content>
