@@ -1,4 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import AddComment from '../../components/AddComment/AddComment';
 import CreatePost from '../../components/CreatePost/CreatePost';
 import { Comment, Post } from '../../types/post';
@@ -96,7 +97,12 @@ const Posts: FC = () => {
         <div key={post.id} className={styles.postContainer}>
           <div className={styles.post}>
             <div className={styles.postContent}>
-              <span>{post.username}</span>
+              <Link
+                className={styles.userLink}
+                to={`/users/${post.app_user_id}/profile`}
+              >
+                <span>{post.username}</span>
+              </Link>
               <h2 className={styles.postTitle}>{post.title}</h2>
               <p className={styles.postText}>{post.content}</p>
             </div>
@@ -107,7 +113,13 @@ const Posts: FC = () => {
           {post.comments.map((comment) => (
             <div key={comment.id} className={styles.commentContainer}>
               <div className={styles.comment}>
-                <span>{comment.username}</span>
+                <Link
+                  className={styles.userLink}
+                  to={`/users/${comment.app_user_id}/profile`}
+                >
+                  <span>{comment.username}</span>
+                </Link>
+
                 <p className={styles.commentText}>{comment.content}</p>
               </div>
               <div className={styles.timeCreated}>

@@ -3,7 +3,7 @@ export interface Post {
   title: string;
   content: string;
   created_at: string;
-  author_id: string;
+  app_user_id: string;
   username: string;
   comments: Comment[];
 }
