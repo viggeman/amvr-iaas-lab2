@@ -42,10 +42,13 @@
   border-radius: 1rem;
 }
 
-.comment span {
+.userLink {
   font-size: 1.1rem;
   font-weight: 600;
-  display: block;
+  top: -1rem;
+}
+.userLink:hover {
+  text-decoration: underline;
 }
 
 .commentText {
@@ -54,5 +57,6 @@
 }
 
 .timeCreated {
-  padding: 0.2rem 0 0 1rem;
+  padding: 0.5rem 0 0 1rem;
+  font-size: 1.2rem;
 }

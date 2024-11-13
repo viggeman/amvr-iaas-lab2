@@ -7,20 +7,26 @@ interface Props {
 }
 
 const CreatePost: FC<Props> = ({ onPostCreated }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [appUserId, setAppUserId] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [formState, setFormState] = useState({
+    title: '',
+    app_user_id: '',
+    content: '',
+  });
+  const resetForm = () => {
+    setFormState({
+      title: '',
+      app_user_id: '',
+      content: '',
+    });
+    setShowForm(false);
+  };
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     event.preventDefault();
-    const newPost: PostData = {
-      title,
-      content,
-      app_user_id: appUserId,
-    };
+    const newPost: PostData = formState;
     console.log('body', newPost);
 
     try {
@@ -37,10 +43,7 @@ const CreatePost: FC<Props> = ({ onPostCreated }) => {
         const newPost: string = await response.json();
         console.log('newpost', newPost);
         onPostCreated(newPost);
-        setTitle('');
-        setAppUserId('');
-        setContent('');
-        setShowForm(false);
+        resetForm();
       } else {
         const errorData = await response.json();
         throw new Error(
@@ -55,43 +58,59 @@ const CreatePost: FC<Props> = ({ onPostCreated }) => {
   return (
     <div className={styles.container}>
       <div className={styles.postContainer}>
-        <button type="button" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'X' : 'Add New Post'}
+        <button
+          type="button"
+          className={styles.button}
+          onClick={() => setShowForm(!showForm)}
+        >
+          {showForm ? 'Close' : 'Add New Post'}
         </button>
-        {showForm && (
-          <form onSubmit={handleSubmit}>
-            <div>
-              <h3>Title</h3>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <h3>Content</h3>
-              <textarea
-                id="content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <h3>User ID</h3>
-              <input
-                type="text"
-                id="appUserId"
-                value={appUserId}
-                onChange={(e) => setAppUserId(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit">Post</button>
-          </form>
-        )}
+
+        <form
+          className={[styles.submitForm, !showForm && styles.isHidden].join(
+            ' '
+          )}
+          onSubmit={handleSubmit}
+        >
+          <div>
+            <h3>Title</h3>
+            <input
+              type="text"
+              id="title"
+              value={formState.title}
+              onChange={(e) =>
+                setFormState({ ...formState, title: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div>
+            <h3>Content</h3>
+            <textarea
+              id="content"
+              value={formState.content}
+              onChange={(e) =>
+                setFormState({ ...formState, content: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div>
+            <h3>User ID</h3>
+            <input
+              type="text"
+              id="appUserId"
+              value={formState.app_user_id}
+              onChange={(e) =>
+                setFormState({ ...formState, app_user_id: e.target.value })
+              }
+              required
+            />
+          </div>
+          <button type="submit" className={styles.button}>
+            Post
+          </button>
+        </form>
       </div>
     </div>
   );

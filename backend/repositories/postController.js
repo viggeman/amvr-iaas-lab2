@@ -27,6 +27,7 @@ exports.getAllPostsWithComments = async (req, res) => {
       SELECT
         c.id,
         c.content,
+        c.app_user_id,
         c.created_at,
         c.modified_at,
         au.first_name || ' ' || au.last_name AS username,
