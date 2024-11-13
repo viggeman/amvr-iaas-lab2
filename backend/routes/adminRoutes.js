@@ -1,5 +1,5 @@
 const {
-  getAllUsers,
+  getUsers,
   getUser,
   modifyUser,
   getUserAddress,
@@ -9,7 +9,7 @@ const express = require('express');
 
 const routes = express.Router();
 
-routes.get('/', getAllUsers);
+routes.get('/', getUsers);
 routes.get('/get-user/:id', getUser);
 routes.put('/modify-user/:id', modifyUser);
 routes.get('/get-user-address/:id', getUserAddress);

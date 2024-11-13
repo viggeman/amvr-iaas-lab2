@@ -67,6 +67,10 @@
   margin-bottom: 18px;
 }
 
+.button {
+  color: #00c5c8;
+}
+
 .deleteButton {
   color: red;
   border: solid 2px #00c5c8;
