@@ -51,33 +51,43 @@ const AddComment: FC<Props> = ({ postId, onCommentCreated }) => {
 
   return (
     <div className={styles.container}>
-      <button type="button" onClick={() => setShowForm(!showForm)}>
+      <button
+        type="button"
+        className={styles.linkButton}
+        onClick={() => setShowForm(!showForm)}
+      >
         {showForm ? 'X' : 'Add Comment'}
       </button>
-      {showForm && (
-        <form onSubmit={handleSubmit} className={styles.commentContainer}>
-          <div>
-            <label htmlFor="content">Content:</label>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="appUserId">App User ID:</label>
-            <input
-              type="text"
-              id="appUserId"
-              value={appUserId}
-              onChange={(e) => setAppUserId(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit">Create Comment</button>
-        </form>
-      )}
+      <form
+        onSubmit={handleSubmit}
+        className={[
+          styles.commentContainer,
+          showForm ? '' : styles.isHidden,
+        ].join(' ')}
+      >
+        <div>
+          <label htmlFor="content">Content:</label>
+          <textarea
+            id="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="appUserId">App User ID:</label>
+          <input
+            type="text"
+            id="appUserId"
+            value={appUserId}
+            onChange={(e) => setAppUserId(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className={styles.button}>
+          Create Comment
+        </button>
+      </form>
     </div>
   );
 };
