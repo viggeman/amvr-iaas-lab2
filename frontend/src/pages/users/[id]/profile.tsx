@@ -9,7 +9,7 @@ interface User {
   last_name: string;
   role: string;
   email_address: string;
-  dateOfBirth: string;
+  date_of_birth: string;
   created_at: string;
   modified_at: string;
 }
@@ -21,7 +21,7 @@ const UserProfile: FC = () => {
     first_name: '',
     last_name: '',
     role: '',
-    dateOfBirth: '',
+    date_of_birth: '',
     email_address: '',
     created_at: '',
     modified_at: '',
@@ -46,7 +46,7 @@ const UserProfile: FC = () => {
 
   return (
     <Box maxWidth='500px' className={styles.container}>
-      <Card variant='clasic'>
+      <Card variant='surface'>
         <h1>{user.first_name + ' ' + user.last_name}</h1>
         {user.id !== undefined ? (
           <Flex direction='column' gap='2' key={user.id}>

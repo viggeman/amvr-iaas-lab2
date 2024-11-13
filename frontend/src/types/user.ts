@@ -7,6 +7,7 @@ export interface User {
   password: string;
   date_of_birth: string;
   address: string;
+  gdpr: boolean;
 }
 
 export interface Address {
