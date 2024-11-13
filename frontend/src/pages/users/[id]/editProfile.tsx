@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Importing useNavigate here
+import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from './profile.module.css';
 import { User } from '../../../types/user';
@@ -19,7 +19,7 @@ type Inputs = {
 
 const EditProfile: FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate(); // Initialize navigate here
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [showDialog, setShowDialog] = useState(false);
 
@@ -57,7 +57,7 @@ const EditProfile: FC = () => {
 
       // Save was successful, redirect to profile page
       console.log('User data updated:', data);
-      navigate(`/users/${id}/profile`); // Redirect to the profile page
+      navigate(`/users/${id}/profile`);
     } catch (error) {
       console.error('Error updating profile:', error);
     }

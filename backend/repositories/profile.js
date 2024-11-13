@@ -12,8 +12,6 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-// module.exports = getProfile;
-
 exports.editProfile = async (req, res) => {
   const {
     role,
@@ -26,6 +24,14 @@ exports.editProfile = async (req, res) => {
     id,
     gdpr,
   } = req.body;
+
+  // Optional: Hash password if it's provided
+  let hashedPassword = password;
+  if (password) {
+    const bcrypt = require('bcrypt');
+    hashedPassword = await bcrypt.hash(password, 10); // Hash password with salt rounds
+  }
+
   try {
     const text = `
       UPDATE app_user AS au
@@ -46,7 +52,7 @@ exports.editProfile = async (req, res) => {
       firstName,
       lastName,
       emailAddress,
-      password,
+      hashedPassword,
       dateOfBirth,
       address,
       gdpr,
@@ -63,16 +69,18 @@ exports.editProfile = async (req, res) => {
 
 // Delete a user
 exports.deleteProfile = async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.body; // Receiving ID in the request body
   try {
     const result = await db.query(
       'DELETE from app_user WHERE app_user.id = $1',
       [id]
     );
-    return res.status(200).json(result.rows);
+    console.log('User deleted:', id);
+    return res
+      .status(200)
+      .json({ message: `User ${id} deleted successfully.` });
   } catch (error) {
     console.error(error);
-    return res.status(500).send('Error fetching data');
+    return res.status(500).send('Error deleting data');
   }
 };
-// Ryan
