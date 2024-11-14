@@ -2,10 +2,11 @@ import { FC, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from './profile.module.css';
-import { User } from '../../../types/user';
-import { Box, Card, Flex, Text, Button, Dialog } from '@radix-ui/themes';
+import { Box, Card, Flex, Text, Button } from '@radix-ui/themes';
+import UserAgreementDialog from '../../../components/ProfileComponents/UserAgreementDialog';
+import AddressDialog from '../../../components/ProfileComponents/AddressDialog';
 
-type Inputs = {
+interface User {
   role: string;
   firstName: string;
   lastName: string;
@@ -15,17 +16,27 @@ type Inputs = {
   address?: string;
   id: string;
   gdpr: boolean;
-};
+}
+
+interface Address {
+  country: string;
+  city: string;
+  street: string;
+  street_number: number;
+  postal_code: number;
+}
 
 const EditProfile: FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [showAddressDialog, setShowAddressDialog] = useState(false); // State for AddressDialog
+  const [address, setAddress] = useState<Address | null>(null);
 
-  const { register, handleSubmit, setValue } = useForm<Inputs>();
+  const { register, handleSubmit, setValue } = useForm<User>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<User> = async (data) => {
     if (!user?.gdpr) {
       console.error('GDPR agreement is required to save data.');
       setShowDialog(true);
@@ -40,7 +51,6 @@ const EditProfile: FC = () => {
       data.id = id;
       data.gdpr = true;
 
-      // Add one day to dateOfBirth
       const dateOfBirth = new Date(data.dateOfBirth);
       dateOfBirth.setDate(dateOfBirth.getDate() + 1);
       data.dateOfBirth = dateOfBirth.toISOString().split('T')[0];
@@ -55,7 +65,6 @@ const EditProfile: FC = () => {
         throw new Error('Network response was not ok');
       }
 
-      // Save was successful, redirect to profile page
       console.log('User data updated:', data);
       navigate(`/users/${id}/profile`);
     } catch (error) {
@@ -63,12 +72,17 @@ const EditProfile: FC = () => {
     }
   };
 
-  const handleAgree = async () => {
+  const handleAgree = () => {
     if (user) {
-      // Update GDPR consent in state
       setUser((prev) => (prev ? { ...prev, gdpr: true } : null));
       setShowDialog(false);
     }
+  };
+
+  const handleAddressSave = (updatedAddress: Address) => {
+    setAddress(updatedAddress);
+    setShowAddressDialog(false);
+    console.log('Address updated:', updatedAddress);
   };
 
   useEffect(() => {
@@ -96,7 +110,6 @@ const EditProfile: FC = () => {
           setValue('gdpr', data[0].gdpr);
         }
 
-        // Show dialog if GDPR has not been agreed to
         if (data[0] && !data[0].gdpr) {
           setShowDialog(true);
         }
@@ -118,7 +131,7 @@ const EditProfile: FC = () => {
               <div className={styles.form}>
                 <Text>First Name: </Text>
                 <input
-                  defaultValue={user.first_name}
+                  defaultValue={user.firstName}
                   {...register('firstName')}
                 />
               </div>
@@ -151,8 +164,15 @@ const EditProfile: FC = () => {
               </div>
               <div className={styles.form}>
                 <Text>Address: </Text>
-                <input defaultValue={user.address} {...register('address')} />
+                <Text>{user.address || 'No address available'}</Text>
               </div>
+              <Button
+                variant='outline'
+                type='button'
+                onClick={() => setShowAddressDialog(true)}
+              >
+                Update Address
+              </Button>
               <div className={styles.form}>
                 <Text>Password: </Text>
                 <input
@@ -161,8 +181,7 @@ const EditProfile: FC = () => {
                   {...register('password')}
                 />
               </div>
-              {user.gdpr && <Text>GDPR Signed</Text>}
-
+              {user.gdpr && <Text>User Agreement Signed ✅</Text>}
               <Button>Save Changes</Button>
             </Flex>
           </form>
@@ -170,46 +189,25 @@ const EditProfile: FC = () => {
           <p>No profile data found</p>
         )}
       </Card>
-      <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>
-        <Dialog.Content maxWidth='450px'>
-          <Dialog.Title>GDPR</Dialog.Title>
-          <Dialog.Description size='2' mb='4'>
-            We need to store and process personal information about you, such as
-            your first name, last name, email address, date of birth, and
-            address. The purpose of this processing is to connect you with other
-            users and/or to enable support to contact you. We obtained your
-            information solely from data inputted by you. We always apply
-            current privacy legislation to all processing of personal data. The
-            legal basis for processing your personal data is the legitimate
-            interest in providing and improving our services. Your information
-            will be stored for as long as you have an active account with us or
-            as required by applicable laws and regulations. The personal
-            information we process about you is shared only with other users on
-            the platform. We will not share your information with any third
-            parties unless legally required to do so. Furthermore, we will never
-            transfer your data to a country outside the EU. The data controller
-            is [Your Company Name]. You have the right to contact us if you
-            would like to access information we have about you, request
-            corrections, request data transfer, restrict processing, object to
-            processing, or request the deletion of your data. The easiest way to
-            do this is by contacting us at support@yourcompany.com. You can
-            reach our Data Protection Officer at dpo@yourcompany.com. If you
-            have any complaints about how we process your personal data, you
-            have the right to lodge a complaint with the supervisory authority,
-            the Swedish Authority for Privacy Protection (IMY).
-          </Dialog.Description>
-          <Flex gap='3' mt='4' justify='end'>
-            <Dialog.Close>
-              <Button variant='soft' color='gray'>
-                Cancel
-              </Button>
-            </Dialog.Close>
-            <Dialog.Close onClick={handleAgree}>
-              <Button type='button'>Agree</Button>
-            </Dialog.Close>
-          </Flex>
-        </Dialog.Content>
-      </Dialog.Root>
+      <UserAgreementDialog
+        open={showDialog}
+        onClose={() => setShowDialog(false)}
+        onAgree={handleAgree}
+      />
+      <AddressDialog
+        open={showAddressDialog}
+        onClose={() => setShowAddressDialog(false)}
+        onSave={handleAddressSave}
+        initialAddress={
+          address || {
+            country: '',
+            city: '',
+            street: '',
+            street_number: 0,
+            postal_code: 0,
+          }
+        }
+      />
     </Box>
   );
 };
