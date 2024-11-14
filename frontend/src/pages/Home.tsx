@@ -53,7 +53,7 @@ const Home: FC = () => {
     // If the message is not an error, perform redirection
     if (message && message !== 'Invalid email or password') {
       console.log(`Navigating to /users/${message}/profile`);  // Log the navigation path
-      navigate(`/users/${message}/profile`);
+      navigate(`/users/${message}/editProfile`);
     } else {
       console.log('Login failed or invalid message. No redirection.');
     }

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./RegisterUser.module.css";
 
 const RegisterUser = () => {
     const [email, setEmail] = useState<string>(''); // Store email input
     const [password, setPassword] = useState<string>(''); // Store password input
     const [message, setMessage] = useState<string>(''); // Store API response messages
+    const navigate = useNavigate(); // Hook to programmatically navigate
 
     // Simple email format validation
     const isValidEmail = (email: string) => {
@@ -31,18 +33,37 @@ const RegisterUser = () => {
         fetch('/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email_address: email, password }) // Updated to match backend parameter names
         })
-            .then((response) => response.json())
+            .then(async (response) => {
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                return response.json();
+            })
             .then((result) => {
                 console.log('API Response:', result); // Debug: Log the full API response
-                setMessage(result.message); // Display the response message
+                setMessage(result.user.id); // Set message to user ID on success
             })
             .catch((error) => {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching data:', error.message);
                 setMessage('Failed to fetch data'); // Display an error message on failure
             });
     };
+
+    // Redirect to editProfile page when message contains user ID
+    useEffect(() => {
+        console.log('Message:', message);  // Log the full message
+
+        // If the message is a user ID, perform redirection
+        if (message && message !== 'Failed to fetch data') {
+            console.log(`Navigating to /users/${message}/editProfile`);  // Log the navigation path
+            navigate(`/users/${message}/editProfile`);
+        } else {
+            console.log('User creation failed or invalid message. No redirection.');
+        }
+    }, [message, navigate]);
 
     return (
         <>
@@ -71,8 +92,12 @@ const RegisterUser = () => {
                         </div>
                     </form>
 
-                    {/* Display message from API response */}
-                    {message && <div className={styles['message-container']}><p>{message}</p></div>}
+                    {/* Display error message if user creation failed */}
+                    {message === 'Failed to fetch data' && (
+                        <div className={styles['message-container']}>
+                            <p>{message}</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </>

@@ -7,7 +7,7 @@ exports.createNewUser = async (req, res) => {
 
     // Simple validation to ensure required fields are provided
     if (!email_address || !password) {
-        return res.status(400).send('Missing email or password');
+        return res.status(400).json({ message: 'Missing email or password' }); // Return JSON error
     }
 
     try {
@@ -16,8 +16,9 @@ exports.createNewUser = async (req, res) => {
 
         // Insert the new user into the app_user table with the hashed password
         const result = await db.query(`
-            INSERT INTO app_user (email_address, password, created_at, modified_at)
-            VALUES ($1, $2, NOW(), NOW()) RETURNING id, email_address, created_at, modified_at;
+            INSERT INTO app_user (email_address, password, created_at, modified_at, gdpr)
+            VALUES ($1, $2, NOW(), NOW(), false)
+            RETURNING id, email_address, created_at, modified_at, gdpr;
         `, [email_address, hashedPassword]);
 
         // Return the newly created user (excluding the password)
@@ -28,6 +29,6 @@ exports.createNewUser = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        return res.status(500).send('Error creating new user');
+        return res.status(500).json({ message: 'Error creating new user' }); // Return JSON error
     }
 };
