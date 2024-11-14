@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./RegisterUser.module.css";
+import styles from "./RegisterUser.module.css"; // Assume you have CSS for styling
 
 const RegisterUser = () => {
     const [email, setEmail] = useState<string>(''); // Store email input
@@ -31,7 +31,7 @@ const RegisterUser = () => {
         fetch('/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email_address: email, password })
         })
             .then((response) => response.json())
             .then((result) => {
