@@ -29,7 +29,7 @@ exports.editProfile = async (req, res) => {
   let hashedPassword = password;
   if (password) {
     const bcrypt = require('bcrypt');
-    hashedPassword = await bcrypt.hash(password, 10); // Hash password with salt rounds
+    hashedPassword = await bcrypt.hash(password, 10);
   }
 
   try {
@@ -82,5 +82,58 @@ exports.deleteProfile = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).send('Error deleting data');
+  }
+};
+
+// Get User Address
+exports.getUserAddress = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const address = await db.query(
+      `SELECT app_user.id as uid, address.country, address.city, address.street,address.street_number, address.postal_code FROM app_user
+              INNER JOIN address ON app_user.address = address.id
+        WHERE app_user.id = $1`,
+      [id]
+    );
+    return res.status(200).json(address.rows);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Error fetching data');
+  }
+};
+
+exports.addUserAddress = async (req, res) => {
+  const { id } = req.params;
+  const { country, city, street, streetNumber, postalCode } = req.body;
+
+  try {
+    // Insert the new address into the address table
+    const addressResult = await db.query(
+      `INSERT INTO address (country, city, street, street_number, postal_code)
+       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+      [country, city, street, streetNumber, postalCode]
+    );
+
+    const addressId = addressResult.rows[0].id;
+
+    // Update the user record with the new address ID
+    await db.query(`UPDATE app_user SET address = $1 WHERE id = $2`, [
+      addressId,
+      id,
+    ]);
+
+    // Fetch and return the updated user address information
+    const updatedAddress = await db.query(
+      `SELECT app_user.id as uid, address.country, address.city, address.street, address.street_number, address.postal_code
+       FROM app_user
+       INNER JOIN address ON app_user.address = address.id
+       WHERE app_user.id = $1`,
+      [id]
+    );
+
+    return res.status(200).json(updatedAddress.rows[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Error adding address');
   }
 };
