@@ -9,10 +9,14 @@ import AddressDialog from '../../../components/ProfileComponents/AddressDialog';
 interface User {
   role: string;
   firstName: string;
+  first_name: string;
   lastName: string;
+  last_name: string;
   emailAddress: string;
+  email_address: string;
   password?: string;
   dateOfBirth: string;
+  date_of_birth: string;
   address?: string;
   id: string;
   gdpr: boolean;
