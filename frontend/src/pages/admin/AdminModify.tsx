@@ -19,12 +19,12 @@ type DeleteInput = {
 const AdminModify = () => {
   const [user, setUser] = useState<null | User[]>(null);
   const [userAddress, setUserAddress] = useState<null | Address[]>(null);
+  const [submitMessage, setSubmitMessage] = useState<null | string>(null);
   const { userId } = useParams();
 
   const {
     register,
     handleSubmit,
-    // watch,
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
@@ -45,13 +45,13 @@ const AdminModify = () => {
     } catch (error) {
       console.error(error);
     }
+    setSubmitMessage('Changes applied!');
+    setTimeout(() => {
+      setSubmitMessage(null);
+    }, 3000);
   };
-  const {
-    register: registerDelete,
-    handleSubmit: handleDeleteSubmit,
-    // watch,
-    // formState: { errors },
-  } = useForm<DeleteInput>();
+  const { register: registerDelete, handleSubmit: handleDeleteSubmit } =
+    useForm<DeleteInput>();
 
   const onSubmitDelete: SubmitHandler<DeleteInput> = async () => {
     const checker = confirm(`Are you sure you want to delete user: ${userId}?`);
@@ -185,6 +185,7 @@ const AdminModify = () => {
                 type="submit"
                 value={'Add changes'}
               />
+              {submitMessage && <p>{submitMessage}</p>}
             </form>
             <form onSubmit={handleDeleteSubmit(onSubmitDelete)} method="DELETE">
               <button type="submit" className={styles.deleteButton}>
