@@ -19,13 +19,13 @@ type DeleteInput = {
 const AdminModify = () => {
   const [user, setUser] = useState<null | User[]>(null);
   const [userAddress, setUserAddress] = useState<null | Address[]>(null);
+  const [submitMessage, setSubmitMessage] = useState<null | string>(null);
   const { userId } = useParams();
 
   const {
     register,
     handleSubmit,
-    // watch,
-    // formState: { errors },
+    formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const checker = confirm('Are you sure you want to add these changes?');
@@ -45,13 +45,13 @@ const AdminModify = () => {
     } catch (error) {
       console.error(error);
     }
+    setSubmitMessage('Changes applied!');
+    setTimeout(() => {
+      setSubmitMessage(null);
+    }, 3000);
   };
-  const {
-    register: registerDelete,
-    handleSubmit: handleDeleteSubmit,
-    // watch,
-    // formState: { errors },
-  } = useForm<DeleteInput>();
+  const { register: registerDelete, handleSubmit: handleDeleteSubmit } =
+    useForm<DeleteInput>();
 
   const onSubmitDelete: SubmitHandler<DeleteInput> = async () => {
     const checker = confirm(`Are you sure you want to delete user: ${userId}?`);
@@ -128,14 +128,26 @@ const AdminModify = () => {
         user.map((user) => (
           <div key={user.id} className={styles.user}>
             <form onSubmit={handleSubmit(onSubmit)} method="PUT">
-              <p>
-                <strong>Role: </strong>
-                <input
-                  className={styles.modifyInput}
-                  defaultValue={user.role}
-                  {...register('role')}
-                />
-              </p>
+              <strong>Role: </strong>
+              <input
+                defaultValue={user.role}
+                className={styles.modifyInput}
+                {...register('role', {
+                  required: 'Role is required',
+                  validate: {
+                    validRole: (value) =>
+                      value === 'user' ||
+                      value === 'admin' ||
+                      'Role must be either "user" or "admin"',
+                  },
+                })}
+                aria-invalid={errors.role ? 'true' : 'false'}
+              />
+              {errors.role && (
+                <p role="alert" className={styles.errorMsg}>
+                  {errors.role.message}
+                </p>
+              )}
               <p>
                 <strong>First Name: </strong>
                 <input
@@ -173,6 +185,7 @@ const AdminModify = () => {
                 type="submit"
                 value={'Add changes'}
               />
+              {submitMessage && <p>{submitMessage}</p>}
             </form>
             <form onSubmit={handleDeleteSubmit(onSubmitDelete)} method="DELETE">
               <button type="submit" className={styles.deleteButton}>

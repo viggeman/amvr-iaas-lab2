@@ -112,3 +112,8 @@
   background-color: #00c5c8;
   color: black;
 }
+
+.errorMsg {
+  width: 100%;
+  color: red;
+}
