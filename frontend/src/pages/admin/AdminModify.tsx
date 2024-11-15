@@ -24,6 +24,7 @@ const AdminModify = () => {
   const {
     register,
     handleSubmit,
+    // watch,
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
@@ -45,8 +46,12 @@ const AdminModify = () => {
       console.error(error);
     }
   };
-  const { register: registerDelete, handleSubmit: handleDeleteSubmit } =
-    useForm<DeleteInput>();
+  const {
+    register: registerDelete,
+    handleSubmit: handleDeleteSubmit,
+    // watch,
+    // formState: { errors },
+  } = useForm<DeleteInput>();
 
   const onSubmitDelete: SubmitHandler<DeleteInput> = async () => {
     const checker = confirm(`Are you sure you want to delete user: ${userId}?`);
@@ -125,6 +130,7 @@ const AdminModify = () => {
             <form onSubmit={handleSubmit(onSubmit)} method="PUT">
               <strong>Role: </strong>
               <input
+                defaultValue={user.role}
                 className={styles.modifyInput}
                 {...register('role', {
                   required: 'Role is required',
